@@ -126,7 +126,7 @@
               2
             ],
             "details": "Create BakeDay model with baked_on date, cut_off_at timestamp, and status fields. Create ProductionCap model linking product variants to bake days with capacity limits. Add composite indexes on (baked_on, product_variant_id) and (bake_day_id, product_variant_id). Implement timezone handling for Europe/Brussels. Add associations between BakeDay, ProductionCap, and ProductVariant models. Include capacity tracking and validation logic.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:20:10.870Z",
+      "updated": "2025-10-03T21:22:55.355Z",
       "description": "Tasks for master context"
     }
   }

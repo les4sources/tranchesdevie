@@ -10,11 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_03_211842) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_03_212108) do
   create_schema "test"
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "bake_days", force: :cascade do |t|
+    t.date "baked_on", null: false, comment: "The date of the bake"
+    t.integer "day_of_week", null: false, comment: "0=Sunday, 1=Monday, 2=Tuesday, 5=Friday, etc."
+    t.datetime "cut_off_at", null: false, comment: "Deadline for orders (timezone-aware)"
+    t.string "status", default: "open", null: false, comment: "open, locked, completed"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["baked_on"], name: "index_bake_days_on_baked_on", unique: true
+    t.index ["cut_off_at"], name: "index_bake_days_on_cut_off_at"
+    t.index ["status"], name: "index_bake_days_on_status"
+  end
 
   create_table "customers", force: :cascade do |t|
     t.string "first_name", null: false
@@ -89,6 +101,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_211842) do
     t.index ["product_id"], name: "index_product_variants_on_product_id"
   end
 
+  create_table "production_caps", force: :cascade do |t|
+    t.bigint "bake_day_id", null: false
+    t.bigint "product_variant_id", null: false
+    t.integer "capacity", default: 0, null: false, comment: "Maximum units that can be produced"
+    t.integer "reserved", default: 0, null: false, comment: "Units already reserved by orders"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bake_day_id", "product_variant_id"], name: "idx_production_caps_bake_variant", unique: true
+    t.index ["bake_day_id"], name: "index_production_caps_on_bake_day_id"
+    t.index ["product_variant_id"], name: "index_production_caps_on_product_variant_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -114,4 +138,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_211842) do
   add_foreign_key "product_ingredients", "ingredients"
   add_foreign_key "product_ingredients", "products"
   add_foreign_key "product_variants", "products"
+  add_foreign_key "production_caps", "bake_days"
+  add_foreign_key "production_caps", "product_variants"
 end

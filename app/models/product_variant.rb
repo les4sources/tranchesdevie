@@ -2,9 +2,9 @@ class ProductVariant < ApplicationRecord
   # Associations
   belongs_to :product
   has_many :product_availabilities, dependent: :destroy
-  # TODO: Add these associations when models are created:
+  has_many :production_caps, dependent: :destroy
+  # TODO: Add this association when model is created:
   # has_many :order_items, dependent: :restrict_with_error
-  # has_many :production_caps, dependent: :destroy
 
   # Validations
   validates :name, presence: true, uniqueness: { scope: :product_id }
