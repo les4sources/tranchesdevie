@@ -87,7 +87,7 @@
         "dependencies": [
           1
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -195,7 +195,7 @@
             "description": "Implement the ProductsController with public catalog action and create basic product listing views without authentication requirements",
             "dependencies": [],
             "details": "Create ProductsController with index action for public catalog. Implement basic product listing view showing products with variants, weights (600g/1kg format), and seasonal indicators. Set up proper routing for public access. Create product partial views for reusable components. Implement basic product model queries with eager loading for variants and availabilities.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:38:54.117Z",
+      "updated": "2025-10-03T21:43:10.218Z",
       "description": "Tasks for master context"
     }
   }

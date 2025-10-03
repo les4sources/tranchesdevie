@@ -1,0 +1,79 @@
+<div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+  <!-- Product Image Placeholder -->
+  <div class="h-48 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
+    <svg class="h-20 w-20 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+    </svg>
+  </div>
+
+  <!-- Product Info -->
+  <div class="p-6">
+    <% if product.category.present? %>
+      <span class="inline-block px-2 py-1 text-xs font-semibold text-amber-800 bg-amber-100 rounded-full mb-2">
+        <%= product.category %>
+      </span>
+    <% end %>
+    
+    <h3 class="text-xl font-bold text-gray-900 mb-2"><%= product.name %></h3>
+    
+    <% if product.description.present? %>
+      <p class="text-sm text-gray-600 mb-4"><%= product.description %></p>
+    <% end %>
+
+    <!-- Variants -->
+    <div class="space-y-2">
+      <% product.available_variants.each do |variant| %>
+        <% 
+          available = if selected_bake_day.present?
+            variant.available_on?(selected_bake_day.baked_on)
+          else
+            true
+          end
+          
+          has_capacity = if selected_bake_day.present?
+            cap = variant.production_caps.find_by(bake_day: selected_bake_day)
+            cap.nil? || cap.available?
+          else
+            true
+          end
+        %>
+        
+        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg <%= available && has_capacity ? 'hover:border-amber-400 hover:bg-amber-50' : 'opacity-50 bg-gray-50' %>">
+          <div class="flex-1">
+            <div class="font-medium text-gray-900">
+              <%= variant.name %>
+              <% if variant.weight_grams.present? %>
+                <span class="text-sm text-gray-500">(<%=variant.weight_grams %>g)</span>
+              <% end %>
+            </div>
+            
+            <% unless available %>
+              <div class="text-xs text-orange-600 mt-1">Non disponible ce jour</div>
+            <% end %>
+            
+            <% if available && !has_capacity %>
+              <div class="text-xs text-red-600 mt-1">Capacité atteinte</div>
+            <% end %>
+          </div>
+          
+          <div class="text-right">
+            <div class="text-lg font-bold text-gray-900">
+              €<%= sprintf('%.2f', variant.price_euros) %>
+            </div>
+            
+            <% if available && has_capacity %>
+              <button class="mt-1 px-3 py-1 text-sm bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors">
+                Ajouter
+              </button>
+            <% else %>
+              <div class="mt-1 px-3 py-1 text-sm bg-gray-300 text-gray-500 rounded cursor-not-allowed">
+                Indisponible
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

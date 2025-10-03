@@ -1,0 +1,50 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <h1 class="text-3xl font-bold text-gray-900">Nos Produits</h1>
+      <p class="mt-2 text-sm text-gray-600">Commandez votre pain artisanal pour mardi ou vendredi</p>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Bake Day Selector -->
+    <div class="mb-8 bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Choisissez votre jour de cuisson</h2>
+      <div class="flex flex-wrap gap-3">
+        <% @upcoming_bake_days.each do |bake_day| %>
+          <%= link_to products_path(bake_day_id: bake_day.id),
+                      class: "px-6 py-3 rounded-lg border-2 transition-colors #{@selected_bake_day == bake_day ? 'bg-amber-500 border-amber-500 text-white' : 'border-gray-300 text-gray-700 hover:border-amber-500 hover:text-amber-600'}" do %>
+            <div class="font-semibold"><%= bake_day.baked_on.strftime('%A') %></div>
+            <div class="text-sm"><%= bake_day.baked_on.strftime('%-d %B') %></div>
+            <div class="text-xs mt-1">Commandez avant <%= bake_day.cut_off_at.strftime('%A %-d %B à %Hh%M') %></div>
+          <% end %>
+        <% end %>
+        
+        <% if @selected_bake_day.present? %>
+          <%= link_to "Voir tous les produits", products_path,
+                      class: "px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-gray-400 flex items-center" %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @products.each do |product| %>
+        <%= render partial: 'product_card', locals: { product: product, selected_bake_day: @selected_bake_day } %>
+      <% end %>
+    </div>
+
+    <% if @products.empty? %>
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun produit disponible</h3>
+        <p class="mt-1 text-sm text-gray-500">Nos produits seront bientôt disponibles.</p>
+      </div>
+    <% end %>
+  </main>
+</div>
