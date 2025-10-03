@@ -10,11 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_03_213503) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_03_213727) do
   create_schema "test"
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "admin_pages", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "slug", null: false
+    t.text "content"
+    t.boolean "published", default: false, null: false
+    t.string "locale", default: "fr", null: false, comment: "fr, nl, en"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["locale", "published"], name: "index_admin_pages_on_locale_and_published"
+    t.index ["slug"], name: "index_admin_pages_on_slug", unique: true
+  end
 
   create_table "bake_days", force: :cascade do |t|
     t.date "baked_on", null: false, comment: "The date of the bake"
@@ -175,6 +187,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_213503) do
     t.index ["name"], name: "index_products_on_name"
   end
 
+  create_table "sms_messages", force: :cascade do |t|
+    t.bigint "customer_id"
+    t.string "phone_e164", null: false
+    t.text "message_body", null: false
+    t.string "direction", null: false, comment: "outbound, inbound"
+    t.string "status", default: "pending", null: false, comment: "pending, sent, delivered, failed"
+    t.datetime "sent_at"
+    t.string "telerivet_message_id"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id", "created_at"], name: "index_sms_messages_on_customer_id_and_created_at"
+    t.index ["customer_id"], name: "index_sms_messages_on_customer_id"
+    t.index ["phone_e164"], name: "index_sms_messages_on_phone_e164"
+    t.index ["sent_at"], name: "index_sms_messages_on_sent_at"
+    t.index ["status"], name: "index_sms_messages_on_status"
+    t.index ["telerivet_message_id"], name: "index_sms_messages_on_telerivet_message_id", unique: true
+  end
+
   create_table "standing_order_items", force: :cascade do |t|
     t.bigint "standing_order_id", null: false
     t.bigint "product_variant_id", null: false
@@ -230,6 +261,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_213503) do
   add_foreign_key "product_variants", "products"
   add_foreign_key "production_caps", "bake_days"
   add_foreign_key "production_caps", "product_variants"
+  add_foreign_key "sms_messages", "customers"
   add_foreign_key "standing_order_items", "product_variants"
   add_foreign_key "standing_order_items", "standing_orders"
   add_foreign_key "standing_order_skips", "standing_orders"
