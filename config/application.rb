@@ -43,6 +43,9 @@ module Tranchesdevie
     # Multi-tenant middleware for subdomain-based tenant switching
     config.middleware.use TenantMiddleware
 
+    # Autoload services directory
+    config.autoload_paths << Rails.root.join("app/services")
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
