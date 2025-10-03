@@ -1,0 +1,985 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Rails 8.1 Project with Multi-tenant Architecture",
+        "description": "Initialize Rails 8.1 application with ros-apartment gem for multi-tenant Postgres schema isolation, configure subdomain routing, and set up basic tenant provisioning",
+        "details": "Create new Rails 8.1 app with Postgres 17. Install and configure ros-apartment gem for schema-based multi-tenancy. Set up subdomain routing in routes.rb. Create Tenant model with subdomain validation. Implement tenant switching middleware. Configure database.yml for multi-schema support. Set up basic tenant seeding with schema creation. Configure Europe/Brussels timezone. Add environment variables for STRIPE_*, TELERIVET_*, SENTRY_DSN, TIME_ZONE.",
+        "testStrategy": "Test tenant creation, schema isolation, subdomain routing. Verify tenant switching works correctly. Test that data is properly scoped per tenant schema.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Initial Rails 8.1 App Creation and Postgres Configuration",
+            "description": "Create new Rails 8.1 application with Postgres 17 database configuration and basic project structure setup",
+            "dependencies": [],
+            "details": "Generate new Rails 8.1 app with --database=postgresql flag. Configure database.yml for Postgres 17 connection. Set up basic Gemfile with required gems. Initialize git repository and create initial commit. Configure application.rb with timezone and basic settings. Set up development and test database connections.\n<info added on 2025-10-03T20:51:26.148Z>\nApplication Rails 8.1 successfully created and configured. Rails 8.1 generated with --database=postgresql --css=tailwind --skip-test flags. Hotwire/Turbo and Stimulus installed and configured for modern frontend interactions. Tailwind CSS 4.1.13 installed with Foreman process management via Procfile.dev. Rails 8 solid gems configured: Solid Cache for caching, Solid Queue for background jobs, and Solid Cable for ActionCable. Kamal deployment configuration pre-configured for production deployment. Timezone set to Europe/Brussels in config/application.rb. Default Postgres configuration generated in database.yml. Development and test databases created: tranchesdevie_development and tranchesdevie_test. Project structure prepared for multi-tenancy implementation with ros-apartment gem, assets pipeline with importmap, background job processing with Solid Queue, and caching with Solid Cache.\n</info added on 2025-10-03T20:51:26.148Z>",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "ros-apartment Gem Installation and Schema Configuration",
+            "description": "Install and configure ros-apartment gem for schema-based multi-tenancy with Postgres schema isolation",
+            "dependencies": [
+              1
+            ],
+            "details": "Add ros-apartment gem to Gemfile and bundle install. Generate apartment configuration file with schema-based tenancy. Configure excluded models that should remain in public schema. Set up apartment initializer with Postgres adapter configuration. Configure schema search path and connection handling. Set up tenant creation and switching mechanisms.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Subdomain Routing Setup",
+            "description": "Configure Rails routing to handle subdomain-based tenant routing and implement subdomain constraints",
+            "dependencies": [
+              2
+            ],
+            "details": "Configure routes.rb with subdomain constraints for tenant routing. Set up subdomain extraction and validation logic. Implement fallback routing for non-tenant requests. Configure ActionDispatch routing for subdomain handling. Set up development environment subdomain configuration with lvh.me or similar. Add routing helpers for tenant-aware URL generation.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Tenant Model and Validation Implementation",
+            "description": "Create Tenant model with subdomain validation, schema management, and tenant provisioning functionality",
+            "dependencies": [
+              3
+            ],
+            "details": "Create Tenant model with subdomain, name, and configuration attributes. Implement subdomain validation with uniqueness and format constraints. Add tenant schema creation and deletion methods. Implement tenant activation/deactivation functionality. Create tenant seeding and provisioning logic. Add tenant configuration management for settings and preferences.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Tenant Switching Middleware Development",
+            "description": "Develop custom middleware for automatic tenant switching based on subdomain detection and request routing",
+            "dependencies": [
+              4
+            ],
+            "details": "Create TenantSwitchingMiddleware class for automatic tenant detection. Implement subdomain extraction from request host. Add tenant switching logic using ros-apartment switch method. Handle tenant not found scenarios with appropriate error responses. Implement tenant caching for performance optimization. Add logging and monitoring for tenant switching operations.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Environment Variables and Timezone Configuration",
+            "description": "Configure environment variables for external services and set up Europe/Brussels timezone with proper Rails configuration",
+            "dependencies": [
+              5
+            ],
+            "details": "Set up environment variables for STRIPE_PUBLISHABLE_KEY, STRIPE_SECRET_KEY, TELERIVET_API_KEY, TELERIVET_PROJECT_ID, SENTRY_DSN, and TIME_ZONE. Configure Rails application timezone to Europe/Brussels. Set up dotenv-rails gem for development environment variables. Create environment variable validation and loading. Configure timezone handling for multi-tenant scenarios. Set up production environment variable management.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Implement Core Data Models and Database Schema",
+        "description": "Create all tenant-scoped data models including customers, products, orders, standing_orders, and their relationships with proper indexing",
+        "details": "Create migrations for: customers (phone_e164 unique), phone_verifications, products, product_variants, product_availabilities, ingredients, product_ingredients, bake_days, production_caps, orders, order_items, payments, standing_orders, standing_order_items, standing_order_skips, sms_messages, admin_pages. Add proper foreign keys, indexes including composites on orders(bake_day_id,status) and production_caps(baked_on,product_variant_id). Implement ActiveRecord models with validations and associations. Add E.164 phone validation.",
+        "testStrategy": "Test model validations, associations, and constraints. Verify unique indexes work correctly. Test phone number E.164 validation. Ensure all models are tenant-scoped.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Customer and Phone Verification Models",
+            "description": "Create Customer model with E.164 phone validation and PhoneVerification model for SMS verification workflow",
+            "dependencies": [],
+            "details": "Create Customer model with phone_e164 field (unique per tenant), name, email, and tenant scoping. Implement E.164 phone number validation using Phonelib gem. Create PhoneVerification model with phone_e164, verification_code, expires_at, verified_at fields. Add proper indexes on phone_e164 and tenant_id. Implement ActiveRecord validations for phone format and uniqueness constraints. Add associations between Customer and PhoneVerification models.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Product, Variant, and Availability Models",
+            "description": "Create Product and ProductVariant models with availability tracking and tenant scoping",
+            "dependencies": [],
+            "details": "Create Product model with name, description, active status, and tenant scoping. Create ProductVariant model with size, price, active status linked to products. Create ProductAvailability model for tracking variant availability per bake day. Add proper foreign key constraints and indexes. Implement ActiveRecord associations (Product has_many ProductVariants, ProductVariant has_many ProductAvailabilities). Add validations for price format and required fields.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement Ingredient and Product-Ingredient Relationship Models",
+            "description": "Create Ingredient model and ProductIngredient join table for managing product compositions",
+            "dependencies": [
+              2
+            ],
+            "details": "Create Ingredient model with name, allergen flags, and tenant scoping. Create ProductIngredient join table linking products to ingredients with quantity fields. Add proper indexes on foreign keys and composite indexes for efficient lookups. Implement many-to-many associations between Product and Ingredient through ProductIngredient. Add validations for ingredient names and quantity constraints. Include allergen tracking functionality.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement Bake Day and Production Capacity Models",
+            "description": "Create BakeDay and ProductionCap models for managing baking schedules and capacity limits",
+            "dependencies": [
+              2
+            ],
+            "details": "Create BakeDay model with baked_on date, cut_off_at timestamp, and status fields. Create ProductionCap model linking product variants to bake days with capacity limits. Add composite indexes on (baked_on, product_variant_id) and (bake_day_id, product_variant_id). Implement timezone handling for Europe/Brussels. Add associations between BakeDay, ProductionCap, and ProductVariant models. Include capacity tracking and validation logic.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement Order and Order Item Models",
+            "description": "Create Order and OrderItem models with proper status tracking and capacity validation",
+            "dependencies": [
+              1,
+              4
+            ],
+            "details": "Create Order model with customer_id, bake_day_id, status, total_amount, and timestamps. Create OrderItem model with order_id, product_variant_id, quantity, and unit_price. Add composite index on orders(bake_day_id, status) for efficient queries. Implement order status enum (pending, confirmed, ready, completed, cancelled). Add foreign key constraints and proper associations. Include order total calculation and capacity validation logic.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Implement Payment Model",
+            "description": "Create Payment model for tracking payment transactions and status",
+            "dependencies": [
+              5
+            ],
+            "details": "Create Payment model with order_id, amount, payment_method, status, transaction_id, and processed_at fields. Add payment status enum (pending, processing, completed, failed, refunded). Implement foreign key relationship to Order model. Add indexes on transaction_id and status for efficient lookups. Include payment validation logic and amount verification against order totals. Add tenant scoping and audit trail fields.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Implement Standing Order Models and Relationships",
+            "description": "Create StandingOrder, StandingOrderItem, and StandingOrderSkip models for recurring orders",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Create StandingOrder model with customer_id, frequency (Tue/Fri/Both), status, and next_bake_day fields. Create StandingOrderItem model with standing_order_id, product_variant_id, and quantity. Create StandingOrderSkip model for tracking paused deliveries. Add proper associations and foreign key constraints. Implement standing order status enum (active, paused, cancelled). Add indexes for efficient recurring order processing and D-4 reminder queries.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 8,
+            "title": "Implement SMS and Admin Page Models with Indexing",
+            "description": "Create SmsMessage and AdminPage models with proper indexing for performance",
+            "dependencies": [
+              1
+            ],
+            "details": "Create SmsMessage model with phone_e164, message_body, direction (inbound/outbound), status, sent_at, and tenant_id. Create AdminPage model for CMS functionality with title, content, slug, and tenant scoping. Add indexes on phone_e164, sent_at, status for SMS tracking. Add unique index on slug per tenant for admin pages. Implement message status enum (pending, sent, delivered, failed). Add associations to Customer model and proper validation rules.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Build Public Catalog with Bake Day Filtering",
+        "description": "Create public product catalog with server-side filtering by bake day, seasonal availability, and capacity constraints without requiring login",
+        "details": "Implement ProductsController with public catalog action. Create product listing views with Hotwire/Turbo and Tailwind CSS. Add bake day selector (Tuesday/Friday) with JavaScript for dynamic filtering. Implement server-side filtering logic for product_availabilities by date ranges and bake_days. Show variant weights clearly (600g/1kg format). Display capacity status and disable products when capacity reached. Add seasonal/bonus product indicators. Implement responsive design with Tailwind.",
+        "testStrategy": "Test catalog loads without authentication. Verify bake day filtering works correctly. Test capacity-based product disabling. Validate seasonal availability display. Test responsive design on mobile/desktop.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create ProductsController and Basic Catalog View",
+            "description": "Implement the ProductsController with public catalog action and create basic product listing views without authentication requirements",
+            "dependencies": [],
+            "details": "Create ProductsController with index action for public catalog. Implement basic product listing view showing products with variants, weights (600g/1kg format), and seasonal indicators. Set up proper routing for public access. Create product partial views for reusable components. Implement basic product model queries with eager loading for variants and availabilities.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Integrate Hotwire/Turbo for Dynamic Filtering",
+            "description": "Set up Hotwire/Turbo integration to enable dynamic filtering without full page reloads",
+            "dependencies": [
+              1
+            ],
+            "details": "Configure Hotwire/Turbo in the application. Create turbo_frame tags for the product catalog section. Implement turbo_stream responses in ProductsController for filter updates. Set up stimulus controllers for handling filter interactions. Create partial views that can be dynamically updated via Turbo streams.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement Bake Day Filtering Logic and JavaScript Components",
+            "description": "Create server-side filtering logic for bake days and JavaScript components for dynamic bake day selection",
+            "dependencies": [
+              2
+            ],
+            "details": "Add bake day selector UI component (Tuesday/Friday options). Implement JavaScript/Stimulus controller for bake day selection handling. Create server-side filtering logic in ProductsController using product_availabilities and bake_days relationships. Add date range filtering for seasonal availability. Implement query scopes for efficient filtering by bake day and availability dates.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Build Capacity-Based Product Availability Display",
+            "description": "Implement capacity checking and display logic to show product availability based on production capacity constraints",
+            "dependencies": [
+              3
+            ],
+            "details": "Create capacity checking service that compares current orders against production_caps. Implement real-time capacity status display in product listings. Add visual indicators for products approaching capacity limits. Create logic to disable product ordering when capacity is reached. Implement capacity status updates that work with Turbo for real-time updates.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement Responsive Design with Tailwind CSS",
+            "description": "Create responsive catalog design using Tailwind CSS for optimal mobile and desktop experience",
+            "dependencies": [
+              4
+            ],
+            "details": "Design responsive product grid layout using Tailwind CSS classes. Implement mobile-first approach with proper breakpoints. Create responsive filter controls and bake day selector. Style product cards with proper spacing, typography, and visual hierarchy. Implement responsive navigation and layout components. Add hover states and interactive elements with Tailwind utilities. Test and optimize for various screen sizes and devices.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Implement Cut-off Logic and Bake Day Management",
+        "description": "Build cut-off enforcement system (Sun 18:00 for Tue, Wed 18:00 for Fri) with automatic bake day disabling and capacity management",
+        "details": "Create BakeDay model with cut-off time calculations in Europe/Brussels timezone. Implement cut-off checking service that disables ordering past deadlines. Add background job (ActiveJob) to automatically lock orders at cut-off times. Create capacity management system with production_caps table. Implement real-time capacity checking with row-level locking to prevent race conditions. Add capacity validation in cart/checkout flow. Create admin interface for setting per-variant capacities per bake day.",
+        "testStrategy": "Test cut-off times are enforced correctly in Europe/Brussels timezone. Verify capacity race condition handling with concurrent requests. Test automatic order locking at cut-off. Validate capacity management prevents overselling.",
+        "priority": "high",
+        "dependencies": [
+          2,
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create BakeDay Model with Timezone-Aware Cut-off Calculations",
+            "description": "Implement BakeDay model with timezone-aware cut-off time calculations for Europe/Brussels timezone, handling Sunday 18:00 cut-off for Tuesday bakes and Wednesday 18:00 cut-off for Friday bakes",
+            "dependencies": [],
+            "details": "Create BakeDay model with fields for bake_date, cut_off_at, is_active. Implement timezone-aware cut-off calculation methods using Europe/Brussels timezone. Add validation for proper cut-off times (Sun 18:00 for Tue, Wed 18:00 for Fri). Include helper methods for checking if cut-off has passed and time remaining until cut-off.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Cut-off Enforcement Service",
+            "description": "Create service class to enforce cut-off times by checking current time against bake day deadlines and preventing orders past cut-off",
+            "dependencies": [
+              1
+            ],
+            "details": "Create CutoffEnforcementService with methods to check if ordering is allowed for specific bake days. Implement timezone-aware current time checking against cut-off times. Add methods to disable ordering UI elements when cut-off has passed. Include error handling for edge cases around timezone transitions.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Build Background Job System for Automatic Order Locking",
+            "description": "Implement ActiveJob background jobs to automatically lock orders at cut-off times and disable further ordering for specific bake days",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Create OrderLockingJob using ActiveJob to run at cut-off times. Implement job scheduling to automatically lock orders for specific bake days. Add job to update BakeDay status to inactive when cut-off passes. Include error handling and retry logic for failed job executions. Set up proper job queuing and scheduling infrastructure.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Create Capacity Management System with Production Caps",
+            "description": "Build production_caps table and capacity management system to track and enforce production limits per product variant per bake day",
+            "dependencies": [
+              1
+            ],
+            "details": "Create production_caps table with fields for baked_on, product_variant_id, capacity, allocated. Implement CapacityManager service for checking available capacity. Add methods to allocate and deallocate capacity when orders are placed/cancelled. Include capacity validation in order placement flow. Create admin interface for setting production capacities.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement Race Condition Prevention with Row-Level Locking",
+            "description": "Add row-level locking mechanisms to prevent race conditions during concurrent capacity allocation and order placement",
+            "dependencies": [
+              4
+            ],
+            "details": "Implement database row-level locking using SELECT FOR UPDATE on production_caps records. Add transaction wrapping around capacity checking and allocation. Implement optimistic locking with version columns where appropriate. Add retry logic for lock timeouts. Include comprehensive error handling for concurrent access scenarios.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Build Admin Interface for Capacity Management",
+            "description": "Create administrative interface for managing production capacities, viewing current allocations, and monitoring cut-off enforcement",
+            "dependencies": [
+              4,
+              5
+            ],
+            "details": "Create admin views for setting per-variant capacities per bake day. Implement capacity overview dashboard showing current allocations vs limits. Add interface for manually adjusting capacities and viewing order allocation history. Include cut-off status monitoring and manual override capabilities. Add bulk capacity setting tools for multiple variants/dates.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Integrate Stripe Payment System with Multi-payment Methods",
+        "description": "Implement Stripe Payment Element supporting Card, Bancontact, Apple Pay, Google Pay with immediate capture and webhook handling",
+        "details": "Install stripe-ruby gem. Create PaymentsController with Stripe Payment Element integration. Support Card, Bancontact, Apple Pay, Google Pay payment methods. Implement immediate capture flow. Create Payment model to track payment_intents. Set up webhook endpoint for payment_intent.succeeded, payment_intent.payment_failed, charge.refunded events. Implement order creation on successful payment. Add payment status tracking and error handling. Configure Stripe webhook signature verification. Add refund functionality for admin.",
+        "testStrategy": "Test all payment methods work correctly. Verify webhook signature validation. Test order creation on successful payment. Test refund processing. Validate payment failure handling and user feedback.",
+        "priority": "high",
+        "dependencies": [
+          2,
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install Stripe gem and setup Payment Element",
+            "description": "Install stripe-ruby gem, configure Stripe credentials, and implement basic Payment Element setup with client-side integration",
+            "dependencies": [],
+            "details": "Add stripe gem to Gemfile. Configure Stripe publishable and secret keys in credentials. Create PaymentsController with new/create actions. Implement Payment Element frontend integration with Stripe.js. Set up basic payment intent creation endpoint. Configure Stripe API version and webhook endpoint URL in Stripe dashboard.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Configure multiple payment methods support",
+            "description": "Enable and configure Card, Bancontact, Apple Pay, and Google Pay payment methods in Stripe Payment Element",
+            "dependencies": [
+              1
+            ],
+            "details": "Configure Payment Element to support multiple payment methods. Enable Card payments with 3D Secure. Set up Bancontact for Belgian customers. Configure Apple Pay with domain verification and merchant ID. Set up Google Pay with merchant configuration. Implement payment method selection UI and validation.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create Payment model and immediate capture flow",
+            "description": "Implement Payment model to track payment intents and configure immediate capture flow for successful payments",
+            "dependencies": [
+              2
+            ],
+            "details": "Create Payment model with fields: stripe_payment_intent_id, amount, currency, status, payment_method_type, order_id. Implement immediate capture flow in PaymentsController. Add payment intent creation with automatic confirmation. Create order association and payment tracking. Implement payment status updates and error handling for failed captures.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement webhook endpoint and signature verification",
+            "description": "Create secure webhook endpoint to handle Stripe events with proper signature verification and event processing",
+            "dependencies": [
+              3
+            ],
+            "details": "Create WebhooksController with Stripe endpoint. Implement webhook signature verification using Stripe webhook secret. Handle payment_intent.succeeded, payment_intent.payment_failed, and charge.refunded events. Create webhook event logging and idempotency handling. Implement secure event processing with proper error handling and retry logic.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement payment status tracking and error handling",
+            "description": "Create comprehensive payment status tracking system with user-friendly error handling and payment failure recovery",
+            "dependencies": [
+              4
+            ],
+            "details": "Implement payment status enum (pending, processing, succeeded, failed, canceled). Create payment status update methods triggered by webhooks. Implement user-friendly error messages for different failure types. Add payment retry functionality for failed payments. Create payment status dashboard for admin users. Implement automatic payment cleanup for abandoned intents.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Add refund functionality for admin users",
+            "description": "Implement secure refund processing system accessible only to admin users with proper authorization and audit logging",
+            "dependencies": [
+              5
+            ],
+            "details": "Create RefundsController with admin-only access control. Implement full and partial refund functionality using Stripe API. Add refund reason tracking and admin notes. Create refund status tracking and webhook handling for refund events. Implement refund audit logging with admin user tracking. Add refund management interface in admin dashboard with search and filtering.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Build Cart and Checkout Flow",
+        "description": "Create shopping cart functionality with bake day selection, order validation, and seamless checkout integration with Stripe",
+        "details": "Implement Cart model/service for session-based cart management. Create cart views with add/remove/update quantity functionality using Turbo. Add bake day selection at cart level with validation. Implement checkout flow with customer information collection (phone E.164 validation). Integrate with Stripe Payment Element. Add order summary and confirmation pages. Implement cart persistence and validation before payment. Add cart conflict resolution when capacity changes. Create order confirmation flow with SMS integration preparation.",
+        "testStrategy": "Test cart operations (add/remove/update). Verify bake day selection and validation. Test checkout flow end-to-end. Validate cart conflicts are handled gracefully. Test order creation and confirmation.",
+        "priority": "high",
+        "dependencies": [
+          3,
+          4,
+          5
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Cart Model and Session Management Service",
+            "description": "Create Cart model with session-based persistence, cart item management, and tenant-scoped operations. Implement CartService for business logic handling cart operations, capacity validation, and session management.",
+            "dependencies": [],
+            "details": "Build Cart model with session_id, tenant scoping, and cart_items association. Create CartItem model with product_variant, quantity, and bake_day fields. Implement CartService class for add/remove/update operations with capacity validation. Add session-based cart persistence and retrieval. Implement cart expiration and cleanup mechanisms. Add cart total calculations and item validation.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Build Cart Views with Turbo Integration",
+            "description": "Create responsive cart views with Turbo Frames for seamless add/remove/update operations. Implement dynamic cart updates without full page reloads and real-time capacity feedback.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create cart show view with Turbo Frame integration. Build add to cart forms with Turbo Stream responses. Implement quantity update controls with immediate feedback. Create remove item functionality with confirmation. Add cart sidebar/modal for quick access. Implement real-time capacity warnings and product availability updates. Style with Tailwind CSS for responsive design.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement Bake Day Selection and Validation",
+            "description": "Add bake day selection at cart level with validation logic to ensure items match selected bake day and capacity constraints are respected per day.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create bake day selector component for cart. Implement validation to ensure all cart items match selected bake day. Add capacity validation per bake day with real-time feedback. Create bake day switching logic with cart item validation. Implement date-based availability checking. Add visual indicators for bake day conflicts and capacity issues.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Build Customer Information Collection with E.164 Validation",
+            "description": "Create customer information form with phone number validation using E.164 format, email validation, and required field handling for checkout process.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Create customer information form with name, email, phone fields. Implement E.164 phone number validation with country code support. Add email format validation and uniqueness checking. Create address collection fields if needed. Implement form validation with real-time feedback. Add customer data persistence in session. Create form styling with Tailwind CSS and error handling.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Integrate Stripe Payment Element",
+            "description": "Implement Stripe Payment Element integration for secure payment processing with proper error handling, payment confirmation, and webhook processing.",
+            "dependencies": [
+              4
+            ],
+            "details": "Set up Stripe Payment Element in checkout form. Create payment intent creation with cart total calculation. Implement payment confirmation handling with success/failure flows. Add webhook endpoint for payment status updates. Create secure payment form with proper error handling. Implement payment retry logic and user feedback. Add payment method validation and security measures.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Create Order Summary and Confirmation Pages",
+            "description": "Build order summary page showing cart contents, customer details, and payment information, plus confirmation page with order details and next steps.",
+            "dependencies": [
+              5
+            ],
+            "details": "Create order summary page with cart items, totals, and customer information review. Build order confirmation page with order number and pickup details. Implement order creation from successful payment. Add email confirmation sending with order details. Create order lookup functionality for customers. Implement order status display and tracking information. Style pages with clear information hierarchy.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Implement Cart Conflict Resolution and Persistence",
+            "description": "Build cart conflict resolution system for capacity changes, product availability updates, and cart persistence across sessions with proper error handling.",
+            "dependencies": [
+              1,
+              2,
+              3
+            ],
+            "details": "Implement cart validation before checkout with capacity checking. Create conflict resolution for when products become unavailable. Add cart persistence across browser sessions. Implement cart recovery mechanisms for interrupted sessions. Create notification system for cart conflicts and changes. Add automatic cart cleanup and expiration handling. Implement cart merging for authenticated users.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement SMS Integration with Telerivet",
+        "description": "Set up Telerivet integration for outbound SMS notifications and inbound webhook handling for PAUSE/STOP keywords",
+        "details": "Install HTTP client gem for Telerivet API. Create SmsService for outbound messaging with templates. Implement SMS templates: order confirmation, ready notification, D-4 reminder. Create webhook endpoint /webhooks/telerivet for inbound SMS processing. Implement case-insensitive PAUSE/STOP keyword parsing. Create SmsMessage model for tracking. Add SMS sending background jobs. Implement tenant branding prefix in SMS messages. Add error handling and retry logic for failed SMS. Configure Telerivet credentials via environment variables.",
+        "testStrategy": "Test outbound SMS sending with all templates. Verify inbound webhook processes PAUSE/STOP correctly. Test SMS template rendering with dynamic data. Validate error handling for SMS failures. Test tenant branding in messages.",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          6
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Setup Telerivet API Client and SmsService Implementation",
+            "description": "Install HTTP client gem and create SmsService class for Telerivet API integration with authentication and message sending capabilities",
+            "dependencies": [],
+            "details": "Add HTTP client gem (faraday or httparty) to Gemfile. Create SmsService class with Telerivet API configuration including API key and project ID. Implement send_sms method with proper authentication headers. Add tenant-scoped SMS configuration. Create service initialization with error handling for missing credentials. Implement message formatting and character limit validation.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement SMS Template System for Notification Types",
+            "description": "Create flexible SMS template system supporting order confirmation, ready notification, D-4 reminder, and tenant branding",
+            "dependencies": [
+              1
+            ],
+            "details": "Create SmsTemplate model or service for managing different notification types. Implement templates for: order confirmation with order details, ready notification with pickup instructions, D-4 reminder for standing orders. Add dynamic variable interpolation (customer name, order number, pickup time). Implement tenant branding prefix system. Create template rendering service with proper escaping and character limits. Add template validation and fallback mechanisms.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create Inbound Webhook Endpoint for PAUSE/STOP Processing",
+            "description": "Implement webhook endpoint to receive and process inbound SMS messages for PAUSE/STOP keyword handling",
+            "dependencies": [
+              1
+            ],
+            "details": "Create /webhooks/telerivet POST endpoint in routes. Implement TelerivetWebhookController with proper authentication verification. Add case-insensitive keyword parsing for PAUSE and STOP commands. Implement PAUSE logic to skip next standing order delivery. Implement STOP logic to suspend standing orders. Add webhook signature verification for security. Create proper HTTP response handling for Telerivet. Add logging for all inbound message processing.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement SmsMessage Model and Background Job System",
+            "description": "Create SmsMessage model for tracking and implement background jobs for asynchronous SMS sending",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Create SmsMessage model with fields: recipient, message, status, sent_at, tenant_id, message_type. Add proper indexes and tenant scoping. Create SendSmsJob background job using ActiveJob. Implement job queuing for all outbound SMS. Add message status tracking (pending, sent, failed, delivered). Create job retry logic with exponential backoff. Implement bulk SMS sending capabilities. Add message history and audit trail functionality.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement Error Handling, Retry Logic, and Monitoring",
+            "description": "Add comprehensive error handling, retry mechanisms, and monitoring for SMS operations",
+            "dependencies": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "details": "Implement try-catch blocks with specific error handling for API failures, network timeouts, and invalid phone numbers. Add exponential backoff retry logic with maximum retry limits. Create SMS delivery status monitoring and webhook handling. Implement dead letter queue for permanently failed messages. Add comprehensive logging for debugging and monitoring. Create alert system for high failure rates. Implement rate limiting to prevent API quota exhaustion. Add SMS cost tracking and budget alerts.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Create Admin Console with Orders Management",
+        "description": "Build comprehensive admin interface for managing orders, marking status changes, and handling refunds with tenant-scoped access",
+        "details": "Create admin authentication system with tenant scoping. Build AdminController with orders dashboard showing all orders by bake day and status. Implement order status management (ready/picked_up/no_show). Create order detail views with customer information and items. Add refund processing interface integrated with Stripe. Implement order search and filtering by date, status, customer. Create French language interface for admin users. Add bulk operations for marking orders ready. Implement order export functionality for production planning.",
+        "testStrategy": "Test admin authentication and tenant scoping. Verify order status updates work correctly. Test refund processing integration. Validate search and filtering functionality. Test bulk operations and exports.",
+        "priority": "medium",
+        "dependencies": [
+          5,
+          6,
+          7
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Admin Authentication System with Tenant Scoping",
+            "description": "Implement secure admin authentication system with tenant-scoped access control and session management",
+            "dependencies": [],
+            "details": "Create AdminUser model with secure authentication using bcrypt. Implement tenant-scoped admin access with proper authorization middleware. Set up admin session management with secure cookies. Create admin login/logout views with French interface. Add role-based permissions system for different admin levels. Implement password reset functionality for admin users. Add audit logging for admin actions.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Orders Dashboard with Filtering and Status Views",
+            "description": "Build comprehensive orders dashboard with filtering capabilities and status-based views for efficient order management",
+            "dependencies": [
+              1
+            ],
+            "details": "Create AdminController with orders dashboard showing all orders grouped by bake day and status. Implement filtering by date range, order status, and customer information. Add status-based views (pending, ready, picked_up, no_show). Create responsive dashboard layout with Tailwind CSS. Add order statistics and summary cards. Implement real-time updates using Turbo Streams. Add pagination for large order lists.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Order Status Management Interface",
+            "description": "Create interface for managing order status transitions (ready/picked_up/no_show) with validation and notifications",
+            "dependencies": [
+              2
+            ],
+            "details": "Implement order status update functionality with proper state transitions. Create buttons/controls for marking orders as ready, picked_up, or no_show. Add validation to prevent invalid status changes. Implement bulk status updates for multiple orders. Add confirmation dialogs for status changes. Create status change history tracking. Implement automatic SMS notifications for status updates using existing Telerivet integration.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Order Detail Views and Customer Information Display",
+            "description": "Build detailed order views showing complete order information, customer details, and order items with clear formatting",
+            "dependencies": [
+              2
+            ],
+            "details": "Create comprehensive order detail views showing customer information, order items with quantities and variants. Display order timeline and status history. Show payment information and transaction details. Add customer contact information with click-to-call functionality. Implement order notes and admin comments system. Create printable order receipts and picking lists. Add order modification capabilities for admin users.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Refund Processing Interface with Stripe Integration",
+            "description": "Implement refund processing system integrated with Stripe for handling partial and full refunds with proper tracking",
+            "dependencies": [
+              4
+            ],
+            "details": "Create refund processing interface integrated with Stripe API. Implement partial and full refund capabilities with amount validation. Add refund reason tracking and notes. Create refund confirmation workflow with admin approval. Implement refund status tracking and history. Add automatic customer notifications for refund processing. Create refund reporting and reconciliation features.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Search, Filtering, Bulk Operations, and Export Functionality",
+            "description": "Implement comprehensive search, advanced filtering, bulk operations, and data export capabilities for efficient order management",
+            "dependencies": [
+              3,
+              4,
+              5
+            ],
+            "details": "Create advanced search functionality for orders by customer name, phone, email, or order ID. Implement multi-criteria filtering (date range, status, bake day, product type). Add bulk operations for status updates, printing, and notifications. Create export functionality for orders data in CSV/Excel format. Implement saved filter presets for common searches. Add keyboard shortcuts for common admin actions. Create batch processing for large operations with progress indicators.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Build Production Management and BOM System",
+        "description": "Create production sheets with ingredient aggregation (Bill of Materials) and capacity management tools for bakers",
+        "details": "Create ProductionSheet service that aggregates orders by product_variant and calculates ingredient requirements. Implement BOM (Bill of Materials) calculation using product_ingredients relationships. Create production views showing quantities needed per variant and total ingredient requirements per bake day. Add production planning interface with capacity setting per variant per bake day. Implement production status tracking. Create printable production sheets. Add low-stock alerts and production notes functionality. Integrate with order locking at cut-off times.",
+        "testStrategy": "Test BOM calculations are accurate. Verify production sheet generation with correct quantities. Test capacity management integration. Validate production planning workflow. Test printable sheet formatting.",
+        "priority": "medium",
+        "dependencies": [
+          4,
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create ProductionSheet Service for Order Aggregation",
+            "description": "Implement ProductionSheet service that aggregates orders by product_variant for each bake day, calculating total quantities needed per variant and organizing data for production planning",
+            "dependencies": [],
+            "details": "Create ProductionSheet service class with methods to aggregate orders by bake_day and product_variant. Implement quantity summation logic. Add methods to group orders by variant and calculate totals. Include order filtering by status and bake day. Add caching for performance optimization.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Build BOM Calculation System Using Product-Ingredient Relationships",
+            "description": "Develop Bill of Materials calculation system that uses product_ingredients relationships to determine total ingredient requirements based on production quantities",
+            "dependencies": [
+              1
+            ],
+            "details": "Create BOMCalculator service that processes product_ingredients relationships. Implement ingredient requirement calculations based on variant quantities. Add unit conversion handling for different ingredient measurements. Include ingredient aggregation across all variants. Add validation for missing ingredient data.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create Production Views with Variant Quantities and Ingredient Requirements",
+            "description": "Build production dashboard views that display variant quantities needed and total ingredient requirements per bake day in an organized, readable format",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Create ProductionController with index and show actions. Build views displaying variant quantities per bake day. Add ingredient requirements summary tables. Implement filtering by bake day and product category. Add sorting and search functionality. Include visual indicators for production status.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement Production Planning Interface with Capacity Management",
+            "description": "Develop production planning interface that allows setting and managing production capacity per variant per bake day with real-time capacity tracking",
+            "dependencies": [
+              3
+            ],
+            "details": "Create production planning views with capacity setting forms. Implement capacity management per variant per bake day. Add real-time capacity vs demand comparison. Include capacity adjustment controls. Add validation to prevent capacity conflicts. Integrate with existing cut-off system.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Build Production Status Tracking and Printable Sheets",
+            "description": "Create production status tracking system with printable production sheets formatted for bakery use, including progress tracking and completion marking",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Add production status fields to track completion progress. Create printable production sheet templates with proper formatting. Implement status update functionality for marking items as completed. Add print-friendly CSS styling. Include barcode or QR code generation for tracking. Add batch completion tracking.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Implement Low-Stock Alerts and Cut-off System Integration",
+            "description": "Develop low-stock alert system that monitors ingredient levels and integrates with the cut-off system to prevent orders when ingredients are insufficient",
+            "dependencies": [
+              2,
+              5
+            ],
+            "details": "Create InventoryMonitor service to track ingredient stock levels. Implement low-stock alert notifications via email/dashboard. Add integration with cut-off system to disable variants when ingredients are low. Create stock level management interface. Add automated stock deduction based on production. Include emergency stock override functionality.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Implement Standing Orders with D-4 SMS Reminders",
+        "description": "Create recurring order system with priority allocation, D-4 SMS reminders at 10:30, and PAUSE/STOP functionality",
+        "details": "Create StandingOrder and StandingOrderItem models for recurring orders (Tue/Fri/Both). Implement standing order creation and management interface. Create background job scheduler for D-4 SMS reminders sent at 10:30 Europe/Brussels time. Implement priority allocation system giving standing orders first access to capacity. Create standing order skip functionality for PAUSE keyword responses. Implement STOP keyword for suspending standing orders. Add standing order management in customer and admin interfaces. Create recurring order processing job that creates regular orders from standing orders.",
+        "testStrategy": "Test standing order creation and scheduling. Verify D-4 SMS timing is correct. Test priority allocation over regular orders. Validate PAUSE/STOP keyword processing. Test recurring order generation accuracy.",
+        "priority": "medium",
+        "dependencies": [
+          7,
+          9
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement StandingOrder and StandingOrderItem Models",
+            "description": "Create ActiveRecord models for StandingOrder and StandingOrderItem with proper validations, associations, and tenant scoping. Include fields for frequency (Tue/Fri/Both), priority levels, and status tracking.",
+            "dependencies": [],
+            "details": "Create StandingOrder model with fields: customer_id, frequency (enum: tuesday, friday, both), status (active, paused, stopped), priority_level, created_at, updated_at. Create StandingOrderItem model with fields: standing_order_id, product_variant_id, quantity, notes. Add proper validations, associations, and tenant scoping. Include indexes for performance optimization.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Build Standing Order Creation and Management Interface",
+            "description": "Develop customer-facing interface for creating, editing, and managing standing orders with product selection and frequency options.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create StandingOrdersController with CRUD operations. Build views for standing order creation with product variant selection and quantity inputs. Implement frequency selection (Tuesday, Friday, Both). Add standing order listing and editing capabilities. Include validation feedback and user-friendly error handling.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement D-4 SMS Reminder Background Job Scheduler",
+            "description": "Create timezone-aware background job system that sends SMS reminders 4 days before bake day at 10:30 Europe/Brussels time.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create StandingOrderReminderJob that calculates D-4 timing for each bake day. Implement timezone handling for Europe/Brussels. Schedule jobs to send SMS at exactly 10:30. Include logic to handle weekends and holidays. Add job retry mechanisms and error handling. Integrate with existing SMS service for message delivery.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Develop Priority Allocation System for Capacity Management",
+            "description": "Implement priority-based capacity allocation giving standing orders first access to available production capacity before regular orders.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create PriorityAllocationService that reserves capacity for standing orders first. Implement capacity checking logic that considers standing order priority levels. Add background job to pre-allocate capacity for upcoming bake days. Include conflict resolution for capacity shortages. Integrate with existing production capacity management system.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement PAUSE/STOP Keyword Processing and Skip Functionality",
+            "description": "Build SMS keyword processing system that handles PAUSE responses for temporary skips and STOP commands for standing order suspension.",
+            "dependencies": [
+              1,
+              3
+            ],
+            "details": "Create StandingOrderSkip model to track paused deliveries. Implement keyword processing logic for case-insensitive PAUSE and STOP commands. Add webhook integration for inbound SMS processing. Create skip management interface for customers to view and manage paused orders. Include automatic resume functionality after skip periods.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Build Customer and Admin Management Interfaces",
+            "description": "Create comprehensive interfaces for customers to manage their standing orders and admin tools for monitoring and managing all standing orders.",
+            "dependencies": [
+              1,
+              2,
+              5
+            ],
+            "details": "Build customer dashboard showing active standing orders, upcoming deliveries, and skip history. Create admin interface for viewing all standing orders, managing customer accounts, and handling exceptions. Add filtering and search capabilities. Implement bulk operations for admin management. Include reporting features for standing order analytics.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Create Recurring Order Generation Job System",
+            "description": "Implement automated system that generates actual orders from standing orders based on frequency settings and capacity availability.",
+            "dependencies": [
+              1,
+              4,
+              5
+            ],
+            "details": "Create RecurringOrderGenerationJob that runs daily to create orders from active standing orders. Implement logic to respect skip periods and capacity constraints. Add order generation scheduling based on bake day frequencies. Include error handling for failed order creation. Add logging and monitoring for the generation process. Integrate with existing order processing workflow.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Create CMS and Multi-language Support",
+        "description": "Build content management system for CGV/refund pages and implement multi-language support (FR/NL/EN) using POEditor integration",
+        "details": "Create AdminPage model for CMS content management. Build admin interface for editing CGV, refund policy, and other static pages. Implement multi-language support with I18n configuration for FR/NL/EN. Set up POEditor integration for translation management. Create language switcher in public interface. Implement admin interface in French only. Add content versioning and publishing workflow. Create SEO-friendly URLs for CMS pages. Implement rich text editing for admin content creation.",
+        "testStrategy": "Test CMS page creation and editing. Verify multi-language switching works correctly. Test POEditor integration for translations. Validate admin French interface. Test SEO URLs and content rendering.",
+        "priority": "low",
+        "dependencies": [
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create AdminPage Model and CMS Content Management",
+            "description": "Implement AdminPage model with fields for title, content, slug, language, and metadata. Set up database schema with proper indexing and validation. Create content management service layer for CRUD operations.",
+            "dependencies": [],
+            "details": "Create AdminPage model with title:string, content:text, slug:string, language:string, meta_title:string, meta_description:text, published:boolean, published_at:datetime. Add validations for slug uniqueness per language, required fields. Create indexes for slug, language, published status. Implement content management service with methods for creating, updating, and retrieving pages. Add tenant scoping for multi-tenant architecture.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Build Admin Interface for Content Editing with Rich Text",
+            "description": "Create comprehensive admin interface for CMS content management with rich text editor, form validation, and French language interface.",
+            "dependencies": [
+              1
+            ],
+            "details": "Build AdminPagesController with index, show, new, create, edit, update, destroy actions. Create admin views with rich text editor (Trix or similar) for content editing. Implement form validation with error handling. Add preview functionality for content before publishing. Create French language interface for admin users. Implement proper authorization and tenant scoping. Add bulk operations for managing multiple pages.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Configure Multi-language I18n for FR/NL/EN Support",
+            "description": "Set up Rails I18n configuration for French, Dutch, and English languages with proper locale detection and fallback mechanisms.",
+            "dependencies": [],
+            "details": "Configure Rails I18n with available locales [:fr, :nl, :en] and default locale :fr. Set up locale files structure (config/locales/fr.yml, nl.yml, en.yml). Implement locale detection from URL parameters, user preferences, or browser headers. Add locale switching middleware and helper methods. Configure locale fallbacks and pluralization rules. Set up date/time formatting per locale. Add locale persistence in session or user preferences.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement POEditor Integration and Language Switcher",
+            "description": "Integrate POEditor API for translation management and create user-friendly language switcher component for the public interface.",
+            "dependencies": [
+              3
+            ],
+            "details": "Set up POEditor API integration with authentication and project configuration. Create rake tasks for syncing translations between Rails and POEditor (export/import). Implement language switcher component with flags/labels for FR/NL/EN. Add language switcher to public layout with proper URL generation. Create translation management interface in admin for reviewing POEditor sync status. Implement automatic translation key detection and export to POEditor.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Add Content Versioning, SEO URLs, and Publishing Workflow",
+            "description": "Implement content versioning system, SEO-friendly URL structure, and publishing workflow with draft/published states.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Create content versioning system with AdminPageVersion model to track changes. Implement SEO-friendly URL routing with locale prefixes (/fr/page-slug, /nl/page-slug, /en/page-slug). Add publishing workflow with draft/published states and scheduled publishing. Create version comparison interface in admin. Implement SEO metadata management (title, description, keywords). Add sitemap generation for published pages. Create public controller for serving CMS pages with proper caching and 404 handling.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Implement Analytics Dashboard and Reporting",
+        "description": "Create comprehensive dashboard with KPIs including sales by bake day/product, revenue analysis, AOV, recurring revenue forecast, and no-show tracking",
+        "details": "Create DashboardController with analytics views. Implement KPI calculations: sales by bake day and product, revenue by date range, average order value, recurring revenue forecast from standing orders, no-show rate tracking. Create interactive charts using Chart.js or similar. Add date range filtering and export functionality. Implement real-time dashboard updates using Turbo. Create automated reporting via email. Add performance metrics for order processing times. Implement customer retention analysis. Create production efficiency metrics.",
+        "testStrategy": "Test all KPI calculations for accuracy. Verify dashboard performance with large datasets. Test date range filtering and exports. Validate real-time updates work correctly. Test automated reporting functionality.",
+        "priority": "low",
+        "dependencies": [
+          10,
+          11
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create DashboardController and Basic Analytics Views",
+            "description": "Implement the main dashboard controller with authentication, tenant scoping, and basic analytics view templates for displaying KPIs and charts",
+            "dependencies": [],
+            "details": "Create DashboardController with proper authentication and tenant scoping. Implement index action with date range parameters. Create dashboard view templates with sections for KPIs, charts, and filters. Add responsive layout for analytics dashboard. Implement basic navigation and breadcrumbs. Set up proper authorization for admin access only.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement KPI Calculation Services",
+            "description": "Build comprehensive KPI calculation services for sales metrics, revenue analysis, average order value, and no-show tracking with proper data aggregation",
+            "dependencies": [
+              1
+            ],
+            "details": "Create AnalyticsService with methods for sales by bake day and product calculations. Implement revenue analysis by date ranges with proper timezone handling. Build average order value calculations with trend analysis. Create no-show rate tracking from order status data. Implement recurring revenue forecasting from standing orders. Add customer retention metrics and order processing time calculations. Ensure all calculations are tenant-scoped and optimized for performance.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Build Interactive Charts with Chart.js Integration",
+            "description": "Implement dynamic chart visualization using Chart.js for displaying sales trends, revenue graphs, and KPI metrics with interactive features",
+            "dependencies": [
+              2
+            ],
+            "details": "Install and configure Chart.js library. Create chart components for sales trends, revenue analysis, and product performance. Implement interactive features like tooltips, legends, and drill-down capabilities. Build responsive chart layouts that work on mobile devices. Create chart data formatting services to convert KPI data to Chart.js format. Add chart refresh functionality and loading states.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement Date Range Filtering and Export Functionality",
+            "description": "Build comprehensive date range filtering system with export capabilities for CSV/PDF reports and data download functionality",
+            "dependencies": [
+              2
+            ],
+            "details": "Create date range picker component with preset options (last 7 days, month, quarter). Implement filtering logic in AnalyticsService to handle date ranges properly. Build CSV export functionality for all KPI data with proper formatting. Create PDF report generation with charts and summary data. Add export background jobs for large datasets. Implement download progress indicators and email delivery for large exports.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement Real-time Updates with Turbo and Automated Reporting",
+            "description": "Build real-time dashboard updates using Turbo Streams and create automated email reporting system with scheduled delivery",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Implement Turbo Stream updates for real-time KPI refreshing. Create background jobs for periodic dashboard data updates. Build automated email reporting system with customizable schedules. Implement report templates for daily, weekly, and monthly summaries. Add email delivery with embedded charts and KPI summaries. Create notification system for significant metric changes or alerts.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Build Performance Metrics and Customer Retention Analysis",
+            "description": "Implement advanced analytics for order processing performance, customer behavior analysis, and retention metrics with predictive insights",
+            "dependencies": [
+              5
+            ],
+            "details": "Create performance monitoring for order processing times and system bottlenecks. Implement customer retention analysis with cohort tracking and churn prediction. Build customer lifetime value calculations and segmentation. Add order fulfillment metrics and capacity utilization analysis. Create predictive analytics for demand forecasting. Implement A/B testing framework for business metrics. Add performance optimization recommendations based on data analysis.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-10-03T20:35:06.044Z",
+      "updated": "2025-10-03T20:51:31.906Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

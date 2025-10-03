@@ -1,0 +1,109 @@
+{
+	"meta": {
+		"generatedAt": "2025-10-03T20:38:23.750Z",
+		"tasksAnalyzed": 12,
+		"totalTasks": 12,
+		"analysisCount": 12,
+		"thresholdScore": 5,
+		"projectName": "Taskmaster",
+		"usedResearch": false
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 1,
+			"taskTitle": "Setup Rails 8.1 Project with Multi-tenant Architecture",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Break down the Rails 8.1 multi-tenant setup into: 1) Initial Rails app creation and Postgres configuration, 2) ros-apartment gem installation and schema configuration, 3) subdomain routing setup, 4) Tenant model and validation implementation, 5) tenant switching middleware development, 6) environment variables and timezone configuration",
+			"reasoning": "High complexity due to multi-tenancy architecture requiring careful database schema isolation, middleware configuration, and subdomain routing. Foundation task that affects entire application structure."
+		},
+		{
+			"taskId": 2,
+			"taskTitle": "Implement Core Data Models and Database Schema",
+			"complexityScore": 8,
+			"recommendedSubtasks": 8,
+			"expansionPrompt": "Divide the data model implementation into: 1) Customer and phone verification models, 2) Product, variant, and availability models, 3) Ingredient and product-ingredient relationship models, 4) Bake day and production capacity models, 5) Order and order item models, 6) Payment model implementation, 7) Standing order models and relationships, 8) SMS and admin page models with proper indexing",
+			"reasoning": "Very high complexity with extensive database schema design, multiple model relationships, composite indexes, and E.164 validation. Critical foundation requiring careful planning of associations and constraints."
+		},
+		{
+			"taskId": 3,
+			"taskTitle": "Build Public Catalog with Bake Day Filtering",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Structure the catalog development into: 1) ProductsController and basic catalog view, 2) Hotwire/Turbo integration for dynamic filtering, 3) Bake day filtering logic and JavaScript components, 4) Capacity-based product availability display, 5) Responsive design implementation with Tailwind CSS",
+			"reasoning": "Moderate complexity involving frontend JavaScript, server-side filtering logic, and real-time capacity checking. Requires integration of multiple technologies but straightforward business logic."
+		},
+		{
+			"taskId": 4,
+			"taskTitle": "Implement Cut-off Logic and Bake Day Management",
+			"complexityScore": 8,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Break down cut-off logic into: 1) BakeDay model with timezone-aware cut-off calculations, 2) Cut-off enforcement service implementation, 3) Background job system for automatic order locking, 4) Capacity management system with production_caps, 5) Race condition prevention with row-level locking, 6) Admin interface for capacity management",
+			"reasoning": "High complexity due to timezone handling, concurrency control, background job scheduling, and race condition prevention. Critical business logic requiring robust implementation."
+		},
+		{
+			"taskId": 5,
+			"taskTitle": "Integrate Stripe Payment System with Multi-payment Methods",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Structure Stripe integration into: 1) Stripe gem installation and Payment Element setup, 2) Multiple payment method configuration (Card, Bancontact, Apple Pay, Google Pay), 3) Payment model and immediate capture flow, 4) Webhook endpoint implementation and signature verification, 5) Payment status tracking and error handling, 6) Refund functionality for admin users",
+			"reasoning": "High complexity involving external API integration, webhook security, multiple payment methods, and financial transaction handling. Requires careful error handling and security considerations."
+		},
+		{
+			"taskId": 6,
+			"taskTitle": "Build Cart and Checkout Flow",
+			"complexityScore": 7,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Divide cart and checkout into: 1) Cart model/service for session management, 2) Cart views with Turbo for add/remove/update operations, 3) Bake day selection and validation at cart level, 4) Customer information collection with E.164 validation, 5) Stripe Payment Element integration in checkout, 6) Order summary and confirmation pages, 7) Cart conflict resolution and persistence",
+			"reasoning": "High complexity integrating multiple systems (cart, validation, payments) with complex state management, conflict resolution, and seamless user experience requirements."
+		},
+		{
+			"taskId": 7,
+			"taskTitle": "Implement SMS Integration with Telerivet",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Structure SMS integration into: 1) Telerivet API client setup and SmsService implementation, 2) SMS template system for different notification types, 3) Inbound webhook endpoint for PAUSE/STOP processing, 4) SmsMessage model and background job system, 5) Error handling, retry logic, and tenant branding",
+			"reasoning": "Moderate complexity with external API integration, webhook handling, and template system. Straightforward implementation but requires proper error handling and message tracking."
+		},
+		{
+			"taskId": 8,
+			"taskTitle": "Create Admin Console with Orders Management",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Break down admin console into: 1) Admin authentication system with tenant scoping, 2) Orders dashboard with filtering and status views, 3) Order status management interface (ready/picked_up/no_show), 4) Order detail views and customer information display, 5) Refund processing interface with Stripe integration, 6) Search, filtering, bulk operations, and export functionality",
+			"reasoning": "High complexity requiring comprehensive admin interface with multiple features, tenant security, Stripe integration, and French localization. Complex UI with many interconnected features."
+		},
+		{
+			"taskId": 9,
+			"taskTitle": "Build Production Management and BOM System",
+			"complexityScore": 8,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Structure production management into: 1) ProductionSheet service for order aggregation, 2) BOM calculation system using product-ingredient relationships, 3) Production views showing variant quantities and ingredient requirements, 4) Production planning interface with capacity management, 5) Production status tracking and printable sheets, 6) Low-stock alerts and integration with cut-off system",
+			"reasoning": "High complexity involving complex business logic for ingredient aggregation, BOM calculations, and production planning. Requires sophisticated data processing and integration with multiple systems."
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "Implement Standing Orders with D-4 SMS Reminders",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Divide standing orders into: 1) StandingOrder and StandingOrderItem model implementation, 2) Standing order creation and management interface, 3) Background job scheduler for D-4 SMS reminders with timezone handling, 4) Priority allocation system for capacity management, 5) PAUSE/STOP keyword processing and skip functionality, 6) Customer and admin management interfaces, 7) Recurring order generation job system",
+			"reasoning": "High complexity with recurring logic, priority systems, timezone-aware scheduling, and integration with SMS and capacity systems. Complex business rules and multiple interconnected components."
+		},
+		{
+			"taskId": 11,
+			"taskTitle": "Create CMS and Multi-language Support",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Structure CMS and i18n into: 1) AdminPage model and CMS content management, 2) Admin interface for content editing with rich text, 3) Multi-language I18n configuration for FR/NL/EN, 4) POEditor integration and language switcher, 5) Content versioning, SEO URLs, and publishing workflow",
+			"reasoning": "Moderate complexity involving CMS functionality, internationalization, and external translation service integration. Well-defined scope with standard implementation patterns."
+		},
+		{
+			"taskId": 12,
+			"taskTitle": "Implement Analytics Dashboard and Reporting",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Break down analytics into: 1) DashboardController and basic analytics views, 2) KPI calculation services (sales, revenue, AOV, no-show tracking), 3) Interactive charts implementation with Chart.js, 4) Date range filtering and export functionality, 5) Real-time updates with Turbo and automated reporting, 6) Performance metrics and customer retention analysis",
+			"reasoning": "High complexity requiring data aggregation, chart visualization, real-time updates, and performance optimization. Complex calculations and multiple data sources with export functionality."
+		}
+	]
+}
