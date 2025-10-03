@@ -115,7 +115,7 @@
               2
             ],
             "details": "Create Ingredient model with name, allergen flags, and tenant scoping. Create ProductIngredient join table linking products to ingredients with quantity fields. Add proper indexes on foreign keys and composite indexes for efficient lookups. Implement many-to-many associations between Product and Ingredient through ProductIngredient. Add validations for ingredient names and quantity constraints. Include allergen tracking functionality.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:17:44.116Z",
+      "updated": "2025-10-03T21:20:10.870Z",
       "description": "Tasks for master context"
     }
   }

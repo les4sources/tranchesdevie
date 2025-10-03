@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_03_211443) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_03_211842) do
   create_schema "test"
 
   # These are extensions that must be enabled in order to support this database
@@ -25,6 +25,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_211443) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_customers_on_email"
     t.index ["phone_e164"], name: "index_customers_on_phone_e164", unique: true
+  end
+
+  create_table "ingredients", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "unit", default: "g", comment: "Default unit: g (grams), kg, L, ml, units"
+    t.boolean "is_allergen", default: false, null: false
+    t.string "allergen_type", comment: "gluten, dairy, nuts, eggs, etc."
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["is_allergen"], name: "index_ingredients_on_is_allergen"
+    t.index ["name"], name: "index_ingredients_on_name", unique: true
   end
 
   create_table "phone_verifications", force: :cascade do |t|
@@ -51,6 +62,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_211443) do
     t.index ["available_until"], name: "index_product_availabilities_on_available_until"
     t.index ["product_variant_id", "available_from"], name: "idx_on_product_variant_id_available_from_87ead5d25c"
     t.index ["product_variant_id"], name: "index_product_availabilities_on_product_variant_id"
+  end
+
+  create_table "product_ingredients", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "ingredient_id", null: false
+    t.decimal "quantity", precision: 10, scale: 2, null: false
+    t.string "unit", comment: "Unit for this quantity (inherits from ingredient if not specified)"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ingredient_id"], name: "index_product_ingredients_on_ingredient_id"
+    t.index ["product_id", "ingredient_id"], name: "idx_product_ingredients_unique", unique: true
+    t.index ["product_id"], name: "index_product_ingredients_on_product_id"
   end
 
   create_table "product_variants", force: :cascade do |t|
@@ -88,5 +111,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_211443) do
 
   add_foreign_key "phone_verifications", "customers"
   add_foreign_key "product_availabilities", "product_variants"
+  add_foreign_key "product_ingredients", "ingredients"
+  add_foreign_key "product_ingredients", "products"
   add_foreign_key "product_variants", "products"
 end
