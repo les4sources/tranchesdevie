@@ -228,7 +228,7 @@
               3
             ],
             "details": "Create capacity checking service that compares current orders against production_caps. Implement real-time capacity status display in product listings. Add visual indicators for products approaching capacity limits. Create logic to disable product ordering when capacity is reached. Implement capacity status updates that work with Turbo for real-time updates.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:55:06.795Z",
+      "updated": "2025-10-03T21:56:06.192Z",
       "description": "Tasks for master context"
     }
   }
