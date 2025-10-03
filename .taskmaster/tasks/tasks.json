@@ -39,7 +39,7 @@
               2
             ],
             "details": "Configure routes.rb with subdomain constraints for tenant routing. Set up subdomain extraction and validation logic. Implement fallback routing for non-tenant requests. Configure ActionDispatch routing for subdomain handling. Set up development environment subdomain configuration with lvh.me or similar. Add routing helpers for tenant-aware URL generation.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -50,7 +50,7 @@
               3
             ],
             "details": "Create Tenant model with subdomain, name, and configuration attributes. Implement subdomain validation with uniqueness and format constraints. Add tenant schema creation and deletion methods. Implement tenant activation/deactivation functionality. Create tenant seeding and provisioning logic. Add tenant configuration management for settings and preferences.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -61,7 +61,7 @@
               4
             ],
             "details": "Create TenantSwitchingMiddleware class for automatic tenant detection. Implement subdomain extraction from request host. Add tenant switching logic using ros-apartment switch method. Handle tenant not found scenarios with appropriate error responses. Implement tenant caching for performance optimization. Add logging and monitoring for tenant switching operations.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -72,7 +72,7 @@
               5
             ],
             "details": "Set up environment variables for STRIPE_PUBLISHABLE_KEY, STRIPE_SECRET_KEY, TELERIVET_API_KEY, TELERIVET_PROJECT_ID, SENTRY_DSN, and TIME_ZONE. Configure Rails application timezone to Europe/Brussels. Set up dotenv-rails gem for development environment variables. Create environment variable validation and loading. Configure timezone handling for multi-tenant scenarios. Set up production environment variable management.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:00:06.597Z",
+      "updated": "2025-10-03T21:06:46.484Z",
       "description": "Tasks for master context"
     }
   }
