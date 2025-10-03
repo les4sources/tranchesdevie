@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_03_211135) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_03_211443) do
   create_schema "test"
 
   # These are extensions that must be enabled in order to support this database
@@ -41,6 +41,43 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_211135) do
     t.index ["phone_e164"], name: "index_phone_verifications_on_phone_e164"
   end
 
+  create_table "product_availabilities", force: :cascade do |t|
+    t.bigint "product_variant_id", null: false
+    t.date "available_from"
+    t.date "available_until"
+    t.string "days_of_week", comment: "Comma-separated day numbers (2=Tuesday, 5=Friday)"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["available_until"], name: "index_product_availabilities_on_available_until"
+    t.index ["product_variant_id", "available_from"], name: "idx_on_product_variant_id_available_from_87ead5d25c"
+    t.index ["product_variant_id"], name: "index_product_availabilities_on_product_variant_id"
+  end
+
+  create_table "product_variants", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.string "name", null: false
+    t.integer "weight_grams"
+    t.integer "price_cents", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_product_variants_on_active"
+    t.index ["product_id", "name"], name: "index_product_variants_on_product_id_and_name", unique: true
+    t.index ["product_id"], name: "index_product_variants_on_product_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "active", default: true, null: false
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_products_on_active"
+    t.index ["category"], name: "index_products_on_category"
+    t.index ["name"], name: "index_products_on_name"
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.string "name"
     t.string "subdomain"
@@ -50,4 +87,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_211135) do
   end
 
   add_foreign_key "phone_verifications", "customers"
+  add_foreign_key "product_availabilities", "product_variants"
+  add_foreign_key "product_variants", "products"
 end

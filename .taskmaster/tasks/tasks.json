@@ -104,7 +104,7 @@
             "description": "Create Product and ProductVariant models with availability tracking and tenant scoping",
             "dependencies": [],
             "details": "Create Product model with name, description, active status, and tenant scoping. Create ProductVariant model with size, price, active status linked to products. Create ProductAvailability model for tracking variant availability per bake day. Add proper foreign key constraints and indexes. Implement ActiveRecord associations (Product has_many ProductVariants, ProductVariant has_many ProductAvailabilities). Add validations for price format and required fields.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:13:15.183Z",
+      "updated": "2025-10-03T21:17:44.116Z",
       "description": "Tasks for master context"
     }
   }
