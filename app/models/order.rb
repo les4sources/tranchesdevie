@@ -3,8 +3,7 @@ class Order < ApplicationRecord
   belongs_to :customer
   belongs_to :bake_day
   has_many :order_items, dependent: :destroy
-  # TODO: Add when Payment model is created:
-  # has_one :payment, dependent: :destroy
+  has_one :payment, dependent: :destroy
 
   # Enums
   enum :status, {

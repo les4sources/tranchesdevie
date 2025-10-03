@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_03_212434) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_03_213241) do
   create_schema "test"
 
   # These are extensions that must be enabled in order to support this database
@@ -79,6 +79,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_212434) do
     t.index ["customer_id"], name: "index_orders_on_customer_id"
     t.index ["order_number"], name: "index_orders_on_order_number", unique: true
     t.index ["status"], name: "index_orders_on_status"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.integer "amount_cents", null: false
+    t.string "payment_method", comment: "card, bancontact, apple_pay, google_pay"
+    t.string "status", default: "pending", null: false
+    t.string "stripe_payment_intent_id"
+    t.string "stripe_charge_id"
+    t.datetime "processed_at"
+    t.text "error_message"
+    t.string "refund_id"
+    t.datetime "refunded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_payments_on_order_id", unique: true
+    t.index ["status"], name: "index_payments_on_status"
+    t.index ["stripe_charge_id"], name: "index_payments_on_stripe_charge_id"
+    t.index ["stripe_payment_intent_id"], name: "index_payments_on_stripe_payment_intent_id", unique: true
   end
 
   create_table "phone_verifications", force: :cascade do |t|
@@ -168,6 +187,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_212434) do
   add_foreign_key "order_items", "product_variants"
   add_foreign_key "orders", "bake_days"
   add_foreign_key "orders", "customers"
+  add_foreign_key "payments", "orders"
   add_foreign_key "phone_verifications", "customers"
   add_foreign_key "product_availabilities", "product_variants"
   add_foreign_key "product_ingredients", "ingredients"

@@ -149,7 +149,7 @@
               5
             ],
             "details": "Create Payment model with order_id, amount, payment_method, status, transaction_id, and processed_at fields. Add payment status enum (pending, processing, completed, failed, refunded). Implement foreign key relationship to Order model. Add indexes on transaction_id and status for efficient lookups. Include payment validation logic and amount verification against order totals. Add tenant scoping and audit trail fields.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:27:20.011Z",
+      "updated": "2025-10-03T21:34:06.981Z",
       "description": "Tasks for master context"
     }
   }
