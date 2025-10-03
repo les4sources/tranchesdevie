@@ -36,7 +36,13 @@ class ProductionCap < ApplicationRecord
     ((reserved.to_f / capacity) * 100).round(1)
   end
 
-  # Reserve units with row-level locking to prevent race conditions
+  # Reserve units with pessimistic row-level locking (SELECT FOR UPDATE)
+  # This prevents race conditions during concurrent capacity allocation
+  # Uses database-level locking to ensure atomicity
+  #
+  # @param quantity [Integer] Number of units to reserve
+  # @return [Boolean] true if successful, false if insufficient capacity
+  # @raise [ActiveRecord::LockWaitTimeout] if lock cannot be acquired
   def reserve!(quantity)
     return false if quantity <= 0
     
@@ -48,9 +54,37 @@ class ProductionCap < ApplicationRecord
         false
       end
     end
+  rescue ActiveRecord::LockWaitTimeout => e
+    Rails.logger.error("Lock timeout while reserving capacity: #{e.message}")
+    raise
   end
 
-  # Release reserved units
+  # Reserve units with retry logic for handling lock timeouts
+  # Attempts multiple times before giving up
+  #
+  # @param quantity [Integer] Number of units to reserve
+  # @param max_retries [Integer] Maximum number of retry attempts (default: 3)
+  # @return [Boolean] true if successful, false if insufficient capacity or max retries exceeded
+  def reserve_with_retry!(quantity, max_retries: 3)
+    retries = 0
+    begin
+      reserve!(quantity)
+    rescue ActiveRecord::LockWaitTimeout
+      retries += 1
+      if retries < max_retries
+        sleep(0.1 * retries) # Exponential backoff
+        retry
+      else
+        Rails.logger.error("Max retries exceeded while reserving capacity for production_cap #{id}")
+        false
+      end
+    end
+  end
+
+  # Release reserved units with row-level locking
+  #
+  # @param quantity [Integer] Number of units to release
+  # @return [Boolean] true if successful, false if invalid quantity
   def release!(quantity)
     return false if quantity <= 0
     
@@ -62,6 +96,18 @@ class ProductionCap < ApplicationRecord
         false
       end
     end
+  rescue ActiveRecord::LockWaitTimeout => e
+    Rails.logger.error("Lock timeout while releasing capacity: #{e.message}")
+    raise
+  end
+
+  # Handle optimistic locking conflicts
+  # Called when a StaleObjectError is raised during concurrent updates
+  def self.handle_stale_object_error
+    yield
+  rescue ActiveRecord::StaleObjectError => e
+    Rails.logger.warn("Optimistic lock conflict detected: #{e.message}")
+    raise
   end
 
   private

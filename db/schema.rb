@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_03_213727) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_03_220803) do
   create_schema "test"
 
   # These are extensions that must be enabled in order to support this database
@@ -170,6 +170,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_213727) do
     t.integer "reserved", default: 0, null: false, comment: "Units already reserved by orders"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "lock_version", default: 0, null: false, comment: "Optimistic locking version for handling concurrent updates"
     t.index ["bake_day_id", "product_variant_id"], name: "idx_production_caps_bake_variant", unique: true
     t.index ["bake_day_id"], name: "index_production_caps_on_bake_day_id"
     t.index ["product_variant_id"], name: "index_production_caps_on_product_variant_id"

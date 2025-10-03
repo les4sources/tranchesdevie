@@ -1,0 +1,48 @@
+<div class="max-w-2xl mx-auto">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Nouvelle capacité de production</h1>
+    <p class="mt-2 text-sm text-gray-600">
+      <%= @bake_day.display_name %>
+    </p>
+  </div>
+
+  <div class="bg-white shadow rounded-lg p-6">
+    <%= form_with model: @production_cap, url: admin_bake_day_production_caps_path(@bake_day), class: "space-y-6" do |f| %>
+      <% if @production_cap.errors.any? %>
+        <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded relative" role="alert">
+          <strong class="font-bold">Erreur :</strong>
+          <ul class="list-disc list-inside mt-2">
+            <% @production_cap.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.label :product_variant_id, "Produit", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.select :product_variant_id,
+              @available_variants.map { |v| [v.display_name, v.id] },
+              { selected: params[:product_variant_id] },
+              class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+      </div>
+
+      <div>
+        <%= f.label :capacity, "Capacité (unités)", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.number_field :capacity,
+              min: 0,
+              value: 10,
+              class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+        <p class="mt-1 text-sm text-gray-500">
+          Nombre maximum d'unités pouvant être produites pour ce produit
+        </p>
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <%= link_to "Annuler", admin_bake_day_production_caps_path(@bake_day), class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+        <%= f.submit "Créer la capacité", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+

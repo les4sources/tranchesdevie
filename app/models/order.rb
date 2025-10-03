@@ -20,6 +20,7 @@ class Order < ApplicationRecord
   validates :order_number, presence: true, uniqueness: true
   validates :total_cents, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :status, presence: true
+  validate :capacity_available, on: :create
 
   # Callbacks
   before_validation :generate_order_number, on: :create
@@ -55,17 +56,19 @@ class Order < ApplicationRecord
     update!(status: :no_show)
   end
 
+  def confirm!
+    transaction do
+      CapacityManager.allocate_order_items!(order_items, bake_day)
+      update!(status: :confirmed)
+    end
+  rescue CapacityManager::InsufficientCapacityError => e
+    errors.add(:base, e.message)
+    false
+  end
+
   def cancel!
     transaction do
-      # Release production capacity
-      order_items.each do |item|
-        cap = ProductionCap.find_by(
-          bake_day: bake_day,
-          product_variant: item.product_variant
-        )
-        cap&.release!(item.quantity)
-      end
-      
+      CapacityManager.release_order_items!(order_items, bake_day)
       update!(status: :cancelled)
     end
   end
@@ -79,6 +82,14 @@ class Order < ApplicationRecord
   end
 
   private
+
+  def capacity_available
+    return unless bake_day.present? && order_items.any?
+    
+    CapacityManager.validate_order_items!(order_items, bake_day)
+  rescue CapacityManager::InsufficientCapacityError => e
+    errors.add(:base, e.message)
+  end
 
   def generate_order_number
     return if order_number.present?

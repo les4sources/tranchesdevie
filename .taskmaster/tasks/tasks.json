@@ -255,7 +255,7 @@
           2,
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -263,7 +263,7 @@
             "description": "Implement BakeDay model with timezone-aware cut-off time calculations for Europe/Brussels timezone, handling Sunday 18:00 cut-off for Tuesday bakes and Wednesday 18:00 cut-off for Friday bakes",
             "dependencies": [],
             "details": "Create BakeDay model with fields for bake_date, cut_off_at, is_active. Implement timezone-aware cut-off calculation methods using Europe/Brussels timezone. Add validation for proper cut-off times (Sun 18:00 for Tue, Wed 18:00 for Fri). Include helper methods for checking if cut-off has passed and time remaining until cut-off.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -274,7 +274,7 @@
               1
             ],
             "details": "Create CutoffEnforcementService with methods to check if ordering is allowed for specific bake days. Implement timezone-aware current time checking against cut-off times. Add methods to disable ordering UI elements when cut-off has passed. Include error handling for edge cases around timezone transitions.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -286,7 +286,7 @@
               2
             ],
             "details": "Create OrderLockingJob using ActiveJob to run at cut-off times. Implement job scheduling to automatically lock orders for specific bake days. Add job to update BakeDay status to inactive when cut-off passes. Include error handling and retry logic for failed job executions. Set up proper job queuing and scheduling infrastructure.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -297,7 +297,7 @@
               1
             ],
             "details": "Create production_caps table with fields for baked_on, product_variant_id, capacity, allocated. Implement CapacityManager service for checking available capacity. Add methods to allocate and deallocate capacity when orders are placed/cancelled. Include capacity validation in order placement flow. Create admin interface for setting production capacities.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -308,7 +308,7 @@
               4
             ],
             "details": "Implement database row-level locking using SELECT FOR UPDATE on production_caps records. Add transaction wrapping around capacity checking and allocation. Implement optimistic locking with version columns where appropriate. Add retry logic for lock timeouts. Include comprehensive error handling for concurrent access scenarios.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -320,7 +320,7 @@
               5
             ],
             "details": "Create admin views for setting per-variant capacities per bake day. Implement capacity overview dashboard showing current allocations vs limits. Add interface for manually adjusting capacities and viewing order allocation history. Include cut-off status monitoring and manual override capabilities. Add bulk capacity setting tools for multiple variants/dates.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:58:16.772Z",
+      "updated": "2025-10-03T22:14:58.776Z",
       "description": "Tasks for master context"
     }
   }

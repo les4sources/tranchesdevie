@@ -12,6 +12,7 @@ class BakeDay < ApplicationRecord
 
   # Callbacks
   before_validation :set_day_of_week, :calculate_cut_off, on: :create
+  after_create :schedule_automatic_locking
 
   # Scopes
   scope :open, -> { where(status: "open") }
@@ -65,7 +66,39 @@ class BakeDay < ApplicationRecord
     baked_on.strftime("%A, %B %-d, %Y")
   end
 
+  def time_remaining_until_cut_off
+    return 0 if past_cut_off?
+    
+    (cut_off_at - Time.current).to_i
+  end
+
+  def formatted_time_remaining
+    return "Fermé" if past_cut_off?
+    
+    seconds = time_remaining_until_cut_off
+    days = seconds / 86400
+    hours = (seconds % 86400) / 3600
+    minutes = (seconds % 3600) / 60
+    
+    if days > 0
+      "#{days}j #{hours}h"
+    elsif hours > 0
+      "#{hours}h #{minutes}min"
+    else
+      "#{minutes}min"
+    end
+  end
+
+  def cut_off_display
+    cut_off_at.in_time_zone("Europe/Brussels").strftime("%A %-d %B à %H:%M")
+  end
+
   private
+
+  def schedule_automatic_locking
+    return if past_cut_off?
+    OrderLockingJob.schedule_for(self)
+  end
 
   def set_day_of_week
     return unless baked_on.present?

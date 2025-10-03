@@ -1,4 +1,24 @@
 Rails.application.routes.draw do
+  # Admin namespace
+  namespace :admin do
+    root "dashboard#index"
+    
+    resources :bake_days do
+      member do
+        post :lock
+        post :unlock
+        post :complete
+      end
+      
+      resources :production_caps do
+        collection do
+          post :bulk_update
+          post :copy_from
+        end
+      end
+    end
+  end
+
   # Public catalog (no authentication required)
   resources :products, only: [:index, :show]
   

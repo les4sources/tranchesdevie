@@ -1,0 +1,218 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-3xl font-bold text-gray-900">Tableau de bord</h1>
+    <p class="mt-2 text-sm text-gray-600">
+      Vue d'ensemble de la gestion des cuissons et des capacités
+    </p>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <!-- Open Bake Days -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <span class="text-2xl">📅</span>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">
+                Cuissons ouvertes
+              </dt>
+              <dd class="text-lg font-medium text-gray-900">
+                <%= @open_bake_days.count %>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Production Caps -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <span class="text-2xl">🏭</span>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">
+                Capacités configurées
+              </dt>
+              <dd class="text-lg font-medium text-gray-900">
+                <%= @total_production_caps %>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- At Capacity -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <span class="text-2xl">⚠️</span>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">
+                Capacités atteintes
+              </dt>
+              <dd class="text-lg font-medium text-gray-900">
+                <%= @caps_at_capacity %>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Capacity -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <span class="text-2xl">✅</span>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">
+                Capacités disponibles
+              </dt>
+              <dd class="text-lg font-medium text-gray-900">
+                <%= @caps_with_capacity %>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upcoming Bake Days -->
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Prochaines cuissons
+        </h3>
+        <%= link_to "Voir toutes", admin_bake_days_path, class: "text-sm text-indigo-600 hover:text-indigo-900" %>
+      </div>
+    </div>
+    <div class="overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Date
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Status
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Cut-off
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Commandes
+            </th>
+            <th scope="col" class="relative px-6 py-3">
+              <span class="sr-only">Actions</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @upcoming_bake_days.each do |bake_day| %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <%= bake_day.display_name %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <% case bake_day.status %>
+                <% when "open" %>
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    Ouvert
+                  </span>
+                <% when "locked" %>
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                    Verrouillé
+                  </span>
+                <% when "completed" %>
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                    Terminé
+                  </span>
+                <% end %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= bake_day.cut_off_display %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= bake_day.orders.count %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <%= link_to "Voir", admin_bake_day_path(bake_day), class: "text-indigo-600 hover:text-indigo-900" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Orders -->
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">
+        Commandes récentes
+      </h3>
+    </div>
+    <div class="overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              N° commande
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Client
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Cuisson
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Total
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Status
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @recent_orders.each do |order| %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <%= order.order_number %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= order.customer_name %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= order.bake_day.display_name %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= number_to_currency(order.total_euros, unit: "€", format: "%n %u") %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= order.status.humanize %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+

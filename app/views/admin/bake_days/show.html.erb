@@ -1,0 +1,186 @@
+<div class="space-y-6">
+  <div class="flex justify-between items-start">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900"><%= @bake_day.display_name %></h1>
+      <p class="mt-2 text-sm text-gray-600">
+        Cut-off: <%= @bake_day.cut_off_display %>
+      </p>
+    </div>
+    
+    <div class="flex space-x-2">
+      <% if @bake_day.status == "open" %>
+        <%= button_to "Verrouiller", lock_admin_bake_day_path(@bake_day), method: :post, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700" %>
+      <% elsif @bake_day.status == "locked" %>
+        <%= button_to "Déverrouiller", unlock_admin_bake_day_path(@bake_day), method: :post, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" %>
+        <%= button_to "Marquer terminé", complete_admin_bake_day_path(@bake_day), method: :post, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700" %>
+      <% end %>
+      
+      <%= link_to "Gérer les capacités", admin_bake_day_production_caps_path(@bake_day), class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+      <%= link_to "← Retour", admin_bake_days_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+    </div>
+  </div>
+
+  <!-- Status and Info -->
+  <div class="bg-white shadow rounded-lg p-6">
+    <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-3">
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Status</dt>
+        <dd class="mt-1">
+          <% case @bake_day.status %>
+          <% when "open" %>
+            <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+              Ouvert
+            </span>
+          <% when "locked" %>
+            <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+              Verrouillé
+            </span>
+          <% when "completed" %>
+            <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+              Terminé
+            </span>
+          <% end %>
+        </dd>
+      </div>
+
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Temps restant avant cut-off</dt>
+        <dd class="mt-1 text-sm text-gray-900">
+          <%= @bake_day.past_cut_off? ? "Cut-off dépassé" : @bake_day.formatted_time_remaining %>
+        </dd>
+      </div>
+
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Capacités configurées</dt>
+        <dd class="mt-1 text-sm text-gray-900">
+          <%= @production_caps.count %> variants
+        </dd>
+      </div>
+    </dl>
+  </div>
+
+  <!-- Production Capacities Overview -->
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">
+        Capacités de production
+      </h3>
+    </div>
+    <div class="overflow-hidden">
+      <% if @production_caps.any? %>
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Produit
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Capacité
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Réservé
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Disponible
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Utilisation
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @production_caps.each do |cap| %>
+              <tr class="<%= 'bg-red-50' if cap.at_capacity? %>">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <%= cap.product_variant_display_name %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= cap.capacity %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= cap.reserved %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                  <%= cap.available %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <span class="text-sm text-gray-500 mr-2"><%= cap.percentage_reserved.round %>%</span>
+                    <div class="w-32 bg-gray-200 rounded-full h-2">
+                      <div class="<%= cap.percentage_reserved >= 80 ? 'bg-red-600' : cap.percentage_reserved >= 50 ? 'bg-yellow-500' : 'bg-green-500' %> h-2 rounded-full" style="width: <%= [cap.percentage_reserved, 100].min %>%"></div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="px-6 py-12 text-center">
+          <p class="text-gray-500">Aucune capacité configurée</p>
+          <%= link_to "Configurer les capacités", admin_bake_day_production_caps_path(@bake_day), class: "mt-2 inline-flex items-center text-indigo-600 hover:text-indigo-900" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Orders -->
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">
+        Commandes (<%= @orders.count %>)
+      </h3>
+    </div>
+    <div class="overflow-hidden">
+      <% if @orders.any? %>
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                N° commande
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Client
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Total
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Articles
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @orders.each do |order| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <%= order.order_number %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= order.customer_name %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= number_to_currency(order.total_euros, unit: "€", format: "%n %u") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= order.status.humanize %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= order.order_items.sum(:quantity) %> unités
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="px-6 py-12 text-center">
+          <p class="text-gray-500">Aucune commande pour cette date</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
