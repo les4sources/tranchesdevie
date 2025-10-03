@@ -11,9 +11,9 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
     <!-- Bake Day Selector -->
-    <div class="mb-8 bg-white rounded-lg shadow p-6" data-controller="bake-day-selector">
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">Choisissez votre jour de cuisson</h2>
-      <div class="flex flex-wrap gap-3" data-bake-day-selector-target="container">
+    <div class="mb-6 md:mb-8 bg-white rounded-lg shadow p-4 md:p-6" data-controller="bake-day-selector">
+      <h2 class="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">Choisissez votre jour de cuisson</h2>
+      <div class="flex flex-col sm:flex-row flex-wrap gap-2 md:gap-3" data-bake-day-selector-target="container">
         <% @upcoming_bake_days.each do |bake_day| %>
           <%= link_to products_path(bake_day_id: bake_day.id),
                       data: { 
@@ -21,17 +21,17 @@
                         action: "click->bake-day-selector#select",
                         bake_day_selector_target: "button"
                       },
-                      class: "px-6 py-3 rounded-lg border-2 transition-colors #{@selected_bake_day == bake_day ? 'bg-amber-500 border-amber-500 text-white' : 'border-gray-300 text-gray-700 hover:border-amber-500 hover:text-amber-600'}" do %>
-            <div class="font-semibold"><%= bake_day.baked_on.strftime('%A') %></div>
-            <div class="text-sm"><%= bake_day.baked_on.strftime('%-d %B') %></div>
-            <div class="text-xs mt-1">Commandez avant <%= bake_day.cut_off_at.strftime('%A %-d %B à %Hh%M') %></div>
+                      class: "flex-1 sm:flex-none px-4 md:px-6 py-3 rounded-lg border-2 transition-colors text-center #{@selected_bake_day == bake_day ? 'bg-amber-500 border-amber-500 text-white' : 'border-gray-300 text-gray-700 hover:border-amber-500 hover:text-amber-600'}" do %>
+            <div class="font-semibold text-sm md:text-base"><%= bake_day.baked_on.strftime('%A') %></div>
+            <div class="text-xs md:text-sm"><%= bake_day.baked_on.strftime('%-d %B') %></div>
+            <div class="text-xs mt-1 hidden sm:block">Avant <%= bake_day.cut_off_at.strftime('%A %-d %b %Hh%M') %></div>
           <% end %>
         <% end %>
         
         <% if @selected_bake_day.present? %>
           <%= link_to "Voir tous les produits", products_path,
                       data: { turbo_frame: "products_list" },
-                      class: "px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-gray-400 flex items-center" %>
+                      class: "flex-1 sm:flex-none px-4 md:px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-gray-400 flex items-center justify-center text-sm md:text-base" %>
         <% end %>
       </div>
     </div>
