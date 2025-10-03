@@ -2,8 +2,7 @@ class BakeDay < ApplicationRecord
   # Associations
   has_many :production_caps, dependent: :destroy
   has_many :product_variants, through: :production_caps
-  # TODO: Add when Order model is created:
-  # has_many :orders, dependent: :restrict_with_error
+  has_many :orders, dependent: :restrict_with_error
 
   # Validations
   validates :baked_on, presence: true, uniqueness: true

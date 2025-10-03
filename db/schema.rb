@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_03_212108) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_03_212434) do
   create_schema "test"
 
   # These are extensions that must be enabled in order to support this database
@@ -48,6 +48,37 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_212108) do
     t.datetime "updated_at", null: false
     t.index ["is_allergen"], name: "index_ingredients_on_is_allergen"
     t.index ["name"], name: "index_ingredients_on_name", unique: true
+  end
+
+  create_table "order_items", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "product_variant_id", null: false
+    t.integer "quantity", null: false
+    t.integer "unit_price_cents", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id", "product_variant_id"], name: "idx_order_items_unique", unique: true
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+    t.index ["product_variant_id"], name: "index_order_items_on_product_variant_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.bigint "bake_day_id", null: false
+    t.string "order_number", null: false
+    t.string "status", default: "pending", null: false
+    t.integer "total_cents", default: 0, null: false
+    t.string "pickup_location"
+    t.datetime "ready_at"
+    t.datetime "picked_up_at"
+    t.boolean "is_standing_order", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bake_day_id", "status"], name: "idx_orders_bake_day_status"
+    t.index ["bake_day_id"], name: "index_orders_on_bake_day_id"
+    t.index ["customer_id"], name: "index_orders_on_customer_id"
+    t.index ["order_number"], name: "index_orders_on_order_number", unique: true
+    t.index ["status"], name: "index_orders_on_status"
   end
 
   create_table "phone_verifications", force: :cascade do |t|
@@ -133,6 +164,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_212108) do
     t.index ["subdomain"], name: "index_tenants_on_subdomain", unique: true
   end
 
+  add_foreign_key "order_items", "orders"
+  add_foreign_key "order_items", "product_variants"
+  add_foreign_key "orders", "bake_days"
+  add_foreign_key "orders", "customers"
   add_foreign_key "phone_verifications", "customers"
   add_foreign_key "product_availabilities", "product_variants"
   add_foreign_key "product_ingredients", "ingredients"

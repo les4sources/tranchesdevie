@@ -1,8 +1,8 @@
 class Customer < ApplicationRecord
   # Associations
   has_many :phone_verifications, dependent: :destroy
-  # TODO: Add these associations when models are created:
-  # has_many :orders, dependent: :destroy
+  has_many :orders, dependent: :destroy
+  # TODO: Add this association when model is created:
   # has_many :standing_orders, dependent: :destroy
 
   # Validations

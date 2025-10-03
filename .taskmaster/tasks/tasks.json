@@ -138,7 +138,7 @@
               4
             ],
             "details": "Create Order model with customer_id, bake_day_id, status, total_amount, and timestamps. Create OrderItem model with order_id, product_variant_id, quantity, and unit_price. Add composite index on orders(bake_day_id, status) for efficient queries. Implement order status enum (pending, confirmed, ready, completed, cancelled). Add foreign key constraints and proper associations. Include order total calculation and capacity validation logic.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:22:55.355Z",
+      "updated": "2025-10-03T21:27:20.011Z",
       "description": "Tasks for master context"
     }
   }
