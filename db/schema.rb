@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_03_213241) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_03_213503) do
   create_schema "test"
 
   # These are extensions that must be enabled in order to support this database
@@ -175,6 +175,41 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_213241) do
     t.index ["name"], name: "index_products_on_name"
   end
 
+  create_table "standing_order_items", force: :cascade do |t|
+    t.bigint "standing_order_id", null: false
+    t.bigint "product_variant_id", null: false
+    t.integer "quantity", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_variant_id"], name: "index_standing_order_items_on_product_variant_id"
+    t.index ["standing_order_id", "product_variant_id"], name: "idx_standing_order_items_unique", unique: true
+    t.index ["standing_order_id"], name: "index_standing_order_items_on_standing_order_id"
+  end
+
+  create_table "standing_order_skips", force: :cascade do |t|
+    t.bigint "standing_order_id", null: false
+    t.date "skipped_date", null: false
+    t.string "reason", comment: "pause, stop, manual"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skipped_date"], name: "index_standing_order_skips_on_skipped_date"
+    t.index ["standing_order_id", "skipped_date"], name: "idx_standing_order_skips_unique", unique: true
+    t.index ["standing_order_id"], name: "index_standing_order_skips_on_standing_order_id"
+  end
+
+  create_table "standing_orders", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.string "frequency", null: false, comment: "tuesday, friday, both"
+    t.string "status", default: "active", null: false, comment: "active, paused, cancelled"
+    t.date "next_bake_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id", "status"], name: "index_standing_orders_on_customer_id_and_status"
+    t.index ["customer_id"], name: "index_standing_orders_on_customer_id"
+    t.index ["next_bake_date"], name: "index_standing_orders_on_next_bake_date"
+    t.index ["status"], name: "index_standing_orders_on_status"
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.string "name"
     t.string "subdomain"
@@ -195,4 +230,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_213241) do
   add_foreign_key "product_variants", "products"
   add_foreign_key "production_caps", "bake_days"
   add_foreign_key "production_caps", "product_variants"
+  add_foreign_key "standing_order_items", "product_variants"
+  add_foreign_key "standing_order_items", "standing_orders"
+  add_foreign_key "standing_order_skips", "standing_orders"
+  add_foreign_key "standing_orders", "customers"
 end

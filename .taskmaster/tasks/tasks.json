@@ -161,7 +161,7 @@
               2
             ],
             "details": "Create StandingOrder model with customer_id, frequency (Tue/Fri/Both), status, and next_bake_day fields. Create StandingOrderItem model with standing_order_id, product_variant_id, and quantity. Create StandingOrderSkip model for tracking paused deliveries. Add proper associations and foreign key constraints. Implement standing order status enum (active, paused, cancelled). Add indexes for efficient recurring order processing and D-4 reminder queries.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:34:06.981Z",
+      "updated": "2025-10-03T21:36:36.457Z",
       "description": "Tasks for master context"
     }
   }
