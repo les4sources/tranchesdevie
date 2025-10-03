@@ -36,6 +36,13 @@ module Tranchesdevie
     config.time_zone = "Europe/Brussels"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    # Load multi-tenant library
+    require_relative "../lib/multi_tenant"
+    require_relative "../app/middleware/tenant_middleware"
+
+    # Multi-tenant middleware for subdomain-based tenant switching
+    config.middleware.use TenantMiddleware
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
