@@ -24,35 +24,36 @@
     <div class="space-y-2">
       <% product.available_variants.each do |variant| %>
         <% 
-          available = if selected_bake_day.present?
-            variant.available_on?(selected_bake_day.baked_on)
-          else
-            true
-          end
-          
-          has_capacity = if selected_bake_day.present?
-            cap = variant.production_caps.find_by(bake_day: selected_bake_day)
-            cap.nil? || cap.available?
-          else
-            true
-          end
+          orderable = variant_orderable?(variant, selected_bake_day)
+          available = variant_available_on_bake_day?(variant, selected_bake_day)
+          has_capacity = variant_has_capacity?(variant, selected_bake_day)
+          capacity_pct = variant_capacity_percentage(variant, selected_bake_day)
+          capacity_text = capacity_status_text(variant, selected_bake_day)
         %>
         
-        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg <%= available && has_capacity ? 'hover:border-amber-400 hover:bg-amber-50' : 'opacity-50 bg-gray-50' %>">
+        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg <%= orderable ? 'hover:border-amber-400 hover:bg-amber-50' : 'opacity-50 bg-gray-50' %>">
           <div class="flex-1">
             <div class="font-medium text-gray-900">
               <%= variant.name %>
               <% if variant.weight_grams.present? %>
-                <span class="text-sm text-gray-500">(<%=variant.weight_grams %>g)</span>
+                <span class="text-sm text-gray-500">(<%= variant.weight_grams %>g)</span>
               <% end %>
             </div>
             
             <% unless available %>
-              <div class="text-xs text-orange-600 mt-1">Non disponible ce jour</div>
+              <div class="text-xs text-orange-600 mt-1">
+                ❌ Non disponible ce jour
+              </div>
             <% end %>
             
             <% if available && !has_capacity %>
-              <div class="text-xs text-red-600 mt-1">Capacité atteinte</div>
+              <div class="text-xs text-red-600 mt-1 font-semibold">
+                🔴 Épuisé
+              </div>
+            <% elsif available && capacity_text.present? %>
+              <div class="text-xs <%= capacity_status_class(capacity_pct) %> mt-1">
+                <%= capacity_text %>
+              </div>
             <% end %>
           </div>
           
@@ -61,7 +62,7 @@
               €<%= sprintf('%.2f', variant.price_euros) %>
             </div>
             
-            <% if available && has_capacity %>
+            <% if orderable %>
               <button class="mt-1 px-3 py-1 text-sm bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors">
                 Ajouter
               </button>

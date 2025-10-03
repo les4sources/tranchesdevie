@@ -1,3 +1,22 @@
+<% if selected_bake_day.present? %>
+  <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+    <div class="flex items-start">
+      <svg class="h-5 w-5 text-blue-500 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <div class="flex-1">
+        <h3 class="text-sm font-medium text-blue-900">
+          Filtré pour <%= selected_bake_day.display_name %>
+        </h3>
+        <p class="mt-1 text-sm text-blue-700">
+          Seuls les produits disponibles pour cette date sont affichés. 
+          Date limite de commande : <strong><%= selected_bake_day.cut_off_at.strftime('%A %-d %B à %Hh%M') %></strong>
+        </p>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   <% products.each do |product| %>
     <%= render partial: 'product_card', locals: { product: product, selected_bake_day: selected_bake_day } %>
@@ -10,6 +29,12 @@
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
     </svg>
     <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun produit disponible</h3>
-    <p class="mt-1 text-sm text-gray-500">Nos produits seront bientôt disponibles.</p>
+    <p class="mt-1 text-sm text-gray-500">
+      <% if selected_bake_day.present? %>
+        Aucun produit n'est disponible pour <%= selected_bake_day.display_name %>. Essayez un autre jour de cuisson.
+      <% else %>
+        Nos produits seront bientôt disponibles.
+      <% end %>
+    </p>
   </div>
 <% end %>

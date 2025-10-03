@@ -217,7 +217,7 @@
               2
             ],
             "details": "Add bake day selector UI component (Tuesday/Friday options). Implement JavaScript/Stimulus controller for bake day selection handling. Create server-side filtering logic in ProductsController using product_availabilities and bake_days relationships. Add date range filtering for seasonal availability. Implement query scopes for efficient filtering by bake day and availability dates.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -978,7 +978,7 @@
     ],
     "metadata": {
       "created": "2025-10-03T20:35:06.044Z",
-      "updated": "2025-10-03T21:52:00.827Z",
+      "updated": "2025-10-03T21:55:06.795Z",
       "description": "Tasks for master context"
     }
   }
